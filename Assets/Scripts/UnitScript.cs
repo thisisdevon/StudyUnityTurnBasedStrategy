@@ -15,6 +15,7 @@ public class UnitScript : MonoBehaviour
     {
         this.moveEndPosition = targetPosition;
         this.moveStartPosition = transform.position;
+
         elapsedTime = 0f;
 
         moveTime = Vector3.Distance(this.moveEndPosition, this.moveStartPosition) / moveSpeed;
@@ -30,7 +31,14 @@ public class UnitScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (IsMoving())
+        if (!IsMoving())
+        {
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                Move(new Vector3(4f, 0f, 4f));
+            }
+        }
+        else
         {
             elapsedTime += Time.deltaTime;
             float normalizedTime = elapsedTime / moveTime;
@@ -39,15 +47,10 @@ public class UnitScript : MonoBehaviour
             Vector3 newPosition = Vector3.Lerp(this.moveStartPosition, this.moveEndPosition, curveEvaluate);
             transform.position = newPosition;
         }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            Move(new Vector3(4f, 0f, 4f));
-        }
     }
 
     bool IsMoving()
     {
-        return elapsedTime <= moveTime;
+        return elapsedTime < moveTime;
     }
 }
