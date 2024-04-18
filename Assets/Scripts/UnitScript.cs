@@ -33,9 +33,9 @@ public class UnitScript : MonoBehaviour
     {
         if (!IsMoving())
         {
-            if (Input.GetKeyDown(KeyCode.T))
+            if (Input.GetMouseButtonDown(0))
             {
-                Move(new Vector3(4f, 0f, 4f));
+                Move(MouseWorldScript.GetPosition());
             }
         }
         else
