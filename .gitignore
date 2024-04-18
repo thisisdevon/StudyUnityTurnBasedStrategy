@@ -3,3 +3,5 @@ Logs
 Temp
 .idea
 obj
+*.csproj
+*.csproj.user
