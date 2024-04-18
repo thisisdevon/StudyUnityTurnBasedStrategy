@@ -13,7 +13,7 @@ public class UnitScript : MonoBehaviour
     [SerializeField] private AnimationCurve moveCurve;
     [SerializeField] private Animator unitAnimator;
 
-    private void Move(Vector3 targetPosition)
+    public void Move(Vector3 targetPosition)
     {
         this.moveEndPosition = targetPosition;
         this.moveStartPosition = transform.position;
@@ -36,10 +36,7 @@ public class UnitScript : MonoBehaviour
         if (!IsMoving())
         {
             unitAnimator.SetBool("IsWalking", false);
-            if (Input.GetMouseButtonDown(0))
-            {
-                Move(MouseWorldScript.GetPosition());
-            }
+            
         }
         else
         {
@@ -58,7 +55,7 @@ public class UnitScript : MonoBehaviour
         }
     }
 
-    bool IsMoving()
+    public bool IsMoving()
     {
         return elapsedMoveTime < moveTime;
     }
