@@ -7,16 +7,18 @@ public class UnitScript : MonoBehaviour
     private Vector3 moveEndPosition;
     private Vector3 moveStartPosition;
     private float moveTime = -1f;
-    private float elapsedTime = 0f;
-    private float moveSpeed = 4f;
-    [SerializeField] AnimationCurve moveCurve;
+    private float elapsedMoveTime = 0f;
+    const float moveSpeed = 4f;
+    const float rotateSpeed = 10f;
+    [SerializeField] private AnimationCurve moveCurve;
+    [SerializeField] private Animator unitAnimator;
 
     private void Move(Vector3 targetPosition)
     {
         this.moveEndPosition = targetPosition;
         this.moveStartPosition = transform.position;
 
-        elapsedTime = 0f;
+        elapsedMoveTime = 0f;
 
         moveTime = Vector3.Distance(this.moveEndPosition, this.moveStartPosition) / moveSpeed;
     }
@@ -25,7 +27,7 @@ public class UnitScript : MonoBehaviour
     void Start()
     {
         moveTime = -1f;
-        elapsedTime = 0f;
+        elapsedMoveTime = 0f;
     }
 
     // Update is called once per frame
@@ -33,6 +35,7 @@ public class UnitScript : MonoBehaviour
     {
         if (!IsMoving())
         {
+            unitAnimator.SetBool("IsWalking", false);
             if (Input.GetMouseButtonDown(0))
             {
                 Move(MouseWorldScript.GetPosition());
@@ -40,17 +43,23 @@ public class UnitScript : MonoBehaviour
         }
         else
         {
-            elapsedTime += Time.deltaTime;
-            float normalizedTime = elapsedTime / moveTime;
+            unitAnimator.SetBool("IsWalking", true);
+            elapsedMoveTime += Time.deltaTime;
+            float normalizedTime = elapsedMoveTime / moveTime;
 
             float curveEvaluate = moveCurve.Evaluate(normalizedTime);
             Vector3 newPosition = Vector3.Lerp(this.moveStartPosition, this.moveEndPosition, curveEvaluate);
+
+            //transform.forward = Vector3.Lerp(transform.forward, (this.moveEndPosition - this.moveStartPosition).normalized, Time.deltaTime * rotateSpeed);
+            Quaternion targetRotation = Quaternion.LookRotation(this.moveEndPosition - transform.position);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotateSpeed);
+
             transform.position = newPosition;
         }
     }
 
     bool IsMoving()
     {
-        return elapsedTime < moveTime;
+        return elapsedMoveTime < moveTime;
     }
 }
