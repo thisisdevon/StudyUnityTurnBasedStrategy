@@ -1,16 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class UnitActionSystemScript : MonoBehaviour
 {
+    public event EventHandler OnSelectedUnitChanged;
     [SerializeField] private LayerMask unitLayerMask;
-    private static UnitActionSystemScript instance;
+    public static UnitActionSystemScript Instance { get; private set; }
     private UnitScript selectedUnit;
 
     void Awake()
     {
-        instance = this;
+        if (Instance != null)
+        {
+            Debug.Log("Multiple UnitActionSystemScript detected");
+        }
+        Instance = this;
     }
 
     // Update is called once per frame
@@ -24,10 +30,10 @@ public class UnitActionSystemScript : MonoBehaviour
             }
             else
             {
-                if (!selectedUnit.IsMoving())
+                if (!Instance.selectedUnit.IsMoving())
                 {
-                    selectedUnit.Move(MouseWorldScript.GetPosition());
-                    selectedUnit = null;
+                    Instance.selectedUnit.Move(MouseWorldScript.GetPosition());
+                    Instance.selectedUnit = null;
                 }
             }
         }
@@ -36,14 +42,25 @@ public class UnitActionSystemScript : MonoBehaviour
     private bool TryHandleUnitSelection()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit raycastHitInfo, float.MaxValue, instance.unitLayerMask))
+        if (Physics.Raycast(ray, out RaycastHit raycastHitInfo, float.MaxValue, Instance.unitLayerMask))
         {
             if (raycastHitInfo.transform.TryGetComponent<UnitScript>(out UnitScript unitHit))
             {
-                instance.selectedUnit = unitHit;
+                SetSelectedUnit(unitHit);
                 return true;
             }
         }
         return false;
+    }
+
+    private void SetSelectedUnit(UnitScript unitSelected)
+    {
+        Instance.selectedUnit = unitSelected;
+        OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public UnitScript GetSelectedUnit()
+    {
+        return Instance.selectedUnit;
     }
 }

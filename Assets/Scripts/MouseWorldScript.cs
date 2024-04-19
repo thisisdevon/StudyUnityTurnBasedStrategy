@@ -7,11 +7,15 @@ public class MouseWorldScript : MonoBehaviour
     [SerializeField] private Transform mouseCursor;
     [SerializeField] private LayerMask mouseLayerMask;
 
-    private static MouseWorldScript instance;
+    public static MouseWorldScript Instance { get; private set; }
 
     void Awake()
     {
-        instance = this;
+        if (Instance != null)
+        {
+            Debug.Log("Multiple MouseWorldScript detected");
+        }
+        Instance = this;
     }
 
     // Update is called once per frame
@@ -23,7 +27,7 @@ public class MouseWorldScript : MonoBehaviour
     public static Vector3 GetPosition()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit raycastHitInfo, float.MaxValue, instance.mouseLayerMask))
+        if (Physics.Raycast(ray, out RaycastHit raycastHitInfo, float.MaxValue, Instance.mouseLayerMask))
         {
             return raycastHitInfo.point;
         }

@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitScript : MonoBehaviour
 {
+    public event EventHandler OnUnitStartMoving;
+    public event EventHandler OnUnitStopMoving;
     private Vector3 moveEndPosition;
     private Vector3 moveStartPosition;
     private float moveTime = -1f;
@@ -36,11 +39,12 @@ public class UnitScript : MonoBehaviour
         if (!IsMoving())
         {
             unitAnimator.SetBool("IsWalking", false);
-            
+            OnUnitStopMoving?.Invoke(this, EventArgs.Empty);
         }
         else
         {
             unitAnimator.SetBool("IsWalking", true);
+            OnUnitStartMoving?.Invoke(this, EventArgs.Empty);
             elapsedMoveTime += Time.deltaTime;
             float normalizedTime = elapsedMoveTime / moveTime;
 
