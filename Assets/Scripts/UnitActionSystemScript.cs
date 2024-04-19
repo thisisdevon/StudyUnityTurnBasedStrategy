@@ -15,6 +15,8 @@ public class UnitActionSystemScript : MonoBehaviour
         if (Instance != null)
         {
             Debug.Log("Multiple UnitActionSystemScript detected");
+            Destroy(gameObject);
+            return;
         }
         Instance = this;
     }

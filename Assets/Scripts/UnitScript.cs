@@ -11,11 +11,31 @@ public class UnitScript : MonoBehaviour
     private Vector3 moveStartPosition;
     private float moveTime = -1f;
     private float elapsedMoveTime = 0f;
-    private GridObject currentGridObject;
+    private GridSystem.GridPosition currentGridPosition;
     const float moveSpeed = 4f;
     const float rotateSpeed = 10f;
     [SerializeField] private AnimationCurve moveCurve;
     [SerializeField] private Animator unitAnimator;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        moveTime = -1f;
+        elapsedMoveTime = 0f;
+        this.currentGridPosition = LevelGridScript.Instance.GetGridPosition(transform.position);
+
+        LevelGridScript.Instance.AssignUnit(this);
+        LevelGridScript.Instance.GetGridObject(this.currentGridPosition).UnitEnterGrid(this);
+    }
+
+    public void UpdateGridPosition(GridSystem.GridPosition gridPosition)
+    {
+        if (this.currentGridPosition != gridPosition)
+        {
+            LevelGridScript.Instance.UnitChangedGridPosition(this, this.currentGridPosition, gridPosition);
+            this.currentGridPosition = gridPosition;
+        }
+    }
 
     public void Move(Vector3 targetPosition)
     {
@@ -25,30 +45,6 @@ public class UnitScript : MonoBehaviour
         elapsedMoveTime = 0f;
 
         moveTime = Vector3.Distance(this.moveEndPosition, this.moveStartPosition) / moveSpeed;
-    }
-
-    public void UpdateGridObject(GridObject gridObject)
-    {
-        if (this.currentGridObject == null)
-        {
-            this.currentGridObject = gridObject;
-            this.currentGridObject.UnitEnterGrid(this);
-        }
-        else if (this.currentGridObject != gridObject)
-        {
-            this.currentGridObject.UnitLeftGrid(this);
-            this.currentGridObject = gridObject;
-            this.currentGridObject.UnitEnterGrid(this);
-        }
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        moveTime = -1f;
-        elapsedMoveTime = 0f;
-
-        LevelGridScript.Instance.AssignUnit(this);
     }
 
     // Update is called once per frame

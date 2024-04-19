@@ -13,6 +13,12 @@ public class LevelGridScript : MonoBehaviour
 
     void Awake()
     {
+        if (Instance != null)
+        {
+            Debug.Log("Multiple LevelGridScript detected");
+            Destroy(gameObject);
+            return;
+        }
         gridSystem = new GridSystem(10, 10, 2.0f);
         unitList = new List<UnitScript>();
         Instance = this;
@@ -23,34 +29,32 @@ public class LevelGridScript : MonoBehaviour
         gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
     }
 
-    public List<UnitScript> GetUnitsAtGridPosition(GridSystem.GridPosition gridPosition)
+    public void AssignUnit(UnitScript unit)
     {
-
-        return GetGridObject(gridPosition).UnitList;
+        unit.OnUnitMoving += UnitScript_OnUnitMoving;
+        unitList.Add(unit);
     }
 
-    private void UnitScript_OnUnitMoving(object sender, UnitScript unit)
-    {
-        GridObject gridObject = GetUnitGridObjectFromPosition(unit);
-        unit.UpdateGridObject(gridObject);
-    }
+    public List<UnitScript> GetUnitsAtGridPosition(GridSystem.GridPosition gridPosition) => GetGridObject(gridPosition).UnitList;
 
+    public GridSystem.GridPosition GetGridPosition(Vector3 position) => gridSystem.GetGridPosition(position);
 
-    private GridObject GetGridObject(GridSystem.GridPosition gridPosition)
-    {
-        return gridSystem.GetGridObject(gridPosition);
-    }
+    public GridObject GetGridObject(GridSystem.GridPosition gridPosition) => gridSystem.GetGridObject(gridPosition);
 
     private GridObject GetUnitGridObjectFromPosition(UnitScript unit)
     {
         GridSystem.GridPosition gridPosition = gridSystem.GetGridPosition(unit.transform.position);
         return GetGridObject(gridPosition);
     }
-
-    public void AssignUnit(UnitScript unit)
+    private void UnitScript_OnUnitMoving(object sender, UnitScript unit)
     {
-        unit.OnUnitMoving += UnitScript_OnUnitMoving;
-        unitList.Add(unit);
-        unit.UpdateGridObject(GetUnitGridObjectFromPosition(unit));
+        unit.UpdateGridPosition(gridSystem.GetGridPosition(unit.transform.position));
     }
+
+    public void UnitChangedGridPosition(UnitScript unit, GridSystem.GridPosition oldGridPosition, GridSystem.GridPosition newGridPosition)
+    {
+        GetGridObject(oldGridPosition).UnitLeftGrid(unit);
+        GetGridObject(newGridPosition).UnitEnterGrid(unit);
+    }
+
 }

@@ -26,9 +26,9 @@ public class GridObject
         string returnString = gridPosition.ToString();
         if (unitList != null && unitList.Count > 0)
         {
-            returnString += "\n";
             foreach(UnitScript unit in unitList)
             {
+                returnString += "\n";
                 returnString += unit.gameObject.name;
             }
         }
@@ -39,7 +39,6 @@ public class GridObject
     {
         if (!unitList.Contains(unitEnter))
         {
-            Debug.Log("Unit has entered: " + gridPosition.x + "," + gridPosition.z);
             unitList.Add(unitEnter);
         }
     }
