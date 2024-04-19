@@ -1,18 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GridDebugObjectScript : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private TextMeshPro textMesh;
+    private GridObject gridObject;
+
+    public void SetGridObject(GridObject gridObject)
     {
-        
+        this.gridObject = gridObject;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        textMesh.text = gridObject.ToString();
     }
 }

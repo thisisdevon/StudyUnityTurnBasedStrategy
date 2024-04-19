@@ -40,8 +40,13 @@ public class GridSystem
 
         public override string ToString()
         {
-            return "x = "  + x + ", z =" + z;
+            return "x:"  + x + ",z:" + z;
         }
+    }
+
+    public Vector3 GetWorldPosition(GridPosition gridPosition)
+    {
+        return new Vector3(gridPosition.x, 0, gridPosition.z) * cellSize;
     }
 
     public Vector3 GetWorldPosition(int x, int z)
@@ -63,8 +68,20 @@ public class GridSystem
         {
             for(int z =0; z < height; z++)
             {
-                GameObject.Instantiate(debugPrefab, GetWorldPosition(x, z), Quaternion.identity);
+                Transform debugTransform = GameObject.Instantiate(debugPrefab, GetWorldPosition(x, z), Quaternion.identity);
+                debugTransform.GetComponent<GridDebugObjectScript>().SetGridObject(GetGridObject(x, z));
             }
         }
+    }
+
+    public GridObject GetGridObject(GridPosition gridPosition)
+    {
+        return gridObjectArray[gridPosition.x, gridPosition.z];
+    }
+
+
+    public GridObject GetGridObject(int x, int z)
+    {
+        return gridObjectArray[x, z];
     }
 }

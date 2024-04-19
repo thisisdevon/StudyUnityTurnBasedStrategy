@@ -16,6 +16,6 @@ public class TestingGridSystem : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(gridSystem.GetGridPosition(MouseWorldScript.GetPosition()));
+        //Debug.Log(gridSystem.GetGridPosition(MouseWorldScript.GetPosition()));
     }
 }
