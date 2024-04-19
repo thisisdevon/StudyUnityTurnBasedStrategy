@@ -455,28 +455,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 796011706}
-  - component: {fileID: 796011705}
+  - component: {fileID: 796011707}
   m_Layer: 0
-  m_Name: TestinGridSystem
+  m_Name: LevelGrid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &796011705
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 796011704}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f490352c51b39475f801fec013f99c0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gridDebugObjectPrefab: {fileID: 4360907183562884977, guid: c49bf93f3c2aa42bc830c82642c3692c,
-    type: 3}
 --- !u!4 &796011706
 Transform:
   m_ObjectHideFlags: 0
@@ -492,6 +478,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &796011707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 796011704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d518307e978374b548e5bd3486f39eaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridDebugObjectPrefab: {fileID: 4360907183562884977, guid: c49bf93f3c2aa42bc830c82642c3692c,
+    type: 3}
 --- !u!1 &814823414
 GameObject:
   m_ObjectHideFlags: 0

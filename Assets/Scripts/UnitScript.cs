@@ -5,12 +5,13 @@ using UnityEngine;
 
 public class UnitScript : MonoBehaviour
 {
-    public event EventHandler OnUnitStartMoving;
     public event EventHandler OnUnitStopMoving;
+    public event EventHandler<UnitScript> OnUnitMoving;
     private Vector3 moveEndPosition;
     private Vector3 moveStartPosition;
     private float moveTime = -1f;
     private float elapsedMoveTime = 0f;
+    private GridObject currentGridObject;
     const float moveSpeed = 4f;
     const float rotateSpeed = 10f;
     [SerializeField] private AnimationCurve moveCurve;
@@ -26,11 +27,28 @@ public class UnitScript : MonoBehaviour
         moveTime = Vector3.Distance(this.moveEndPosition, this.moveStartPosition) / moveSpeed;
     }
 
+    public void UpdateGridObject(GridObject gridObject)
+    {
+        if (this.currentGridObject == null)
+        {
+            this.currentGridObject = gridObject;
+            this.currentGridObject.UnitEnterGrid(this);
+        }
+        else if (this.currentGridObject != gridObject)
+        {
+            this.currentGridObject.UnitLeftGrid(this);
+            this.currentGridObject = gridObject;
+            this.currentGridObject.UnitEnterGrid(this);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         moveTime = -1f;
         elapsedMoveTime = 0f;
+
+        LevelGridScript.Instance.AssignUnit(this);
     }
 
     // Update is called once per frame
@@ -44,7 +62,7 @@ public class UnitScript : MonoBehaviour
         else
         {
             unitAnimator.SetBool("IsWalking", true);
-            OnUnitStartMoving?.Invoke(this, EventArgs.Empty);
+            OnUnitMoving?.Invoke(this, this);
             elapsedMoveTime += Time.deltaTime;
             float normalizedTime = elapsedMoveTime / moveTime;
 
