@@ -31,13 +31,14 @@ public class LevelGridScript : MonoBehaviour
 
     public void AssignUnit(UnitScript unit)
     {
-        unit.OnUnitMoving += UnitScript_OnUnitMoving;
+        //unit.OnUnitMoving += UnitScript_OnUnitMoving;
         unitList.Add(unit);
     }
 
-    public List<UnitScript> GetUnitsAtGridPosition(GridSystem.GridPosition gridPosition) => GetGridObject(gridPosition).UnitList;
+    public List<UnitScript> GetUnitsAtGridPosition(GridSystem.GridPosition gridPosition) => GetGridObject(gridPosition)?.UnitList;
 
     public GridSystem.GridPosition GetGridPosition(Vector3 position) => gridSystem.GetGridPosition(position);
+    public Vector3 GetWorldPosition(GridSystem.GridPosition gridPosition) => gridSystem.GetWorldPosition(gridPosition);
 
     public GridObject GetGridObject(GridSystem.GridPosition gridPosition) => gridSystem.GetGridObject(gridPosition);
 
@@ -46,10 +47,6 @@ public class LevelGridScript : MonoBehaviour
         GridSystem.GridPosition gridPosition = gridSystem.GetGridPosition(unit.transform.position);
         return GetGridObject(gridPosition);
     }
-    private void UnitScript_OnUnitMoving(object sender, UnitScript unit)
-    {
-        unit.UpdateGridPosition(gridSystem.GetGridPosition(unit.transform.position));
-    }
 
     public void UnitChangedGridPosition(UnitScript unit, GridSystem.GridPosition oldGridPosition, GridSystem.GridPosition newGridPosition)
     {
@@ -57,4 +54,11 @@ public class LevelGridScript : MonoBehaviour
         GetGridObject(newGridPosition).UnitEnterGrid(unit);
     }
 
+    public bool IsUnitOnGridPosition(GridSystem.GridPosition gridPosition)
+    {
+        return GetUnitsAtGridPosition(gridPosition)?.Count > 0;
+    }
+
+    public bool IsValidGridPosition(GridSystem.GridPosition gridPosition) => gridSystem.IsValidGridPosition(gridPosition);
+    public bool IsValidGridPosition(int x, int z) => gridSystem.IsValidGridPosition(x, z);
 }

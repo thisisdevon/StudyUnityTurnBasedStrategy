@@ -33,6 +33,7 @@ public class GridSystem
     {
         public int x;
         public int z;
+
         public GridPosition(int x, int z)
         {
             this.x = x;
@@ -42,6 +43,16 @@ public class GridSystem
         public override string ToString()
         {
             return "x:"  + x + ",z:" + z;
+        }
+
+        public static GridPosition operator +(GridPosition a, GridPosition b)
+        {
+            return new GridPosition(a.x + b.x, a.z + b.z);
+        }
+
+        public static GridPosition operator -(GridPosition a, GridPosition b)
+        {
+            return new GridPosition(a.x - b.x, a.z - b.z);
         }
 
         public static bool operator ==(GridPosition a, GridPosition b)
@@ -102,12 +113,25 @@ public class GridSystem
 
     public GridObject GetGridObject(GridPosition gridPosition)
     {
-        return gridObjectArray[gridPosition.x, gridPosition.z];
+        return GetGridObject(gridPosition.x, gridPosition.z);
     }
 
 
     public GridObject GetGridObject(int x, int z)
     {
         return gridObjectArray[x, z];
+    }
+
+    public bool IsValidGridPosition(GridPosition gridPosition)
+    {
+        return IsValidGridPosition(gridPosition.x, gridPosition.z);
+    }
+
+    public bool IsValidGridPosition(int x, int z)
+    {
+        return x >= 0 &&  
+        z >= 0 && 
+        x < width && 
+        z < height;
     }
 }

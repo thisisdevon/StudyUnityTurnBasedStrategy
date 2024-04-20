@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 5210683195509071184}
   - component: {fileID: 5295639412752133100}
   - component: {fileID: 538894081970486853}
+  - component: {fileID: 3286965573575422975}
   m_Layer: 7
   m_Name: Unit
   m_TagString: Untagged
@@ -166,30 +167,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a21ab4b024441cbaac871a0433e1ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0.9506579
-      outSlope: 0.9506579
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.027941177
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1.5937496
-      outSlope: 1.5937496
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.026470602
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   unitAnimator: {fileID: 5508918925790721637}
 --- !u!65 &538894081970486853
 BoxCollider:
@@ -212,6 +189,42 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.48, y: 2.062494, z: 0.5110289}
   m_Center: {x: 0, y: 0.8512471, z: 0}
+--- !u!114 &3286965573575422975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3825420997070554218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6167226644384419d961cd9935453a27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &1169215492786032523
 PrefabInstance:
   m_ObjectHideFlags: 0

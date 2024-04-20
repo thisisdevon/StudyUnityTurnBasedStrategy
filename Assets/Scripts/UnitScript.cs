@@ -6,24 +6,21 @@ using UnityEngine;
 public class UnitScript : MonoBehaviour
 {
     public event EventHandler OnUnitStopMoving;
-    public event EventHandler<UnitScript> OnUnitMoving;
-    private Vector3 moveEndPosition;
-    private Vector3 moveStartPosition;
-    private float moveTime = -1f;
-    private float elapsedMoveTime = 0f;
-    private GridSystem.GridPosition currentGridPosition;
-    const float moveSpeed = 4f;
-    const float rotateSpeed = 10f;
-    [SerializeField] private AnimationCurve moveCurve;
+    //public event EventHandler<UnitScript> OnUnitMoving;
     [SerializeField] private Animator unitAnimator;
+
+    private GridSystem.GridPosition currentGridPosition;
+    private MoveAction moveAction;
+
+    void Awake()
+    {
+        moveAction = GetComponent<MoveAction>();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        moveTime = -1f;
-        elapsedMoveTime = 0f;
         this.currentGridPosition = LevelGridScript.Instance.GetGridPosition(transform.position);
-
         LevelGridScript.Instance.AssignUnit(this);
         LevelGridScript.Instance.GetGridObject(this.currentGridPosition).UnitEnterGrid(this);
     }
@@ -37,16 +34,6 @@ public class UnitScript : MonoBehaviour
         }
     }
 
-    public void Move(Vector3 targetPosition)
-    {
-        this.moveEndPosition = targetPosition;
-        this.moveStartPosition = transform.position;
-
-        elapsedMoveTime = 0f;
-
-        moveTime = Vector3.Distance(this.moveEndPosition, this.moveStartPosition) / moveSpeed;
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -58,23 +45,21 @@ public class UnitScript : MonoBehaviour
         else
         {
             unitAnimator.SetBool("IsWalking", true);
-            OnUnitMoving?.Invoke(this, this);
-            elapsedMoveTime += Time.deltaTime;
-            float normalizedTime = elapsedMoveTime / moveTime;
-
-            float curveEvaluate = moveCurve.Evaluate(normalizedTime);
-            Vector3 newPosition = Vector3.Lerp(this.moveStartPosition, this.moveEndPosition, curveEvaluate);
-
-            //transform.forward = Vector3.Lerp(transform.forward, (this.moveEndPosition - this.moveStartPosition).normalized, Time.deltaTime * rotateSpeed);
-            Quaternion targetRotation = Quaternion.LookRotation(this.moveEndPosition - transform.position);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotateSpeed);
-
-            transform.position = newPosition;
+            //OnUnitMoving?.Invoke(this, this);
+            UpdateGridPosition(LevelGridScript.Instance.GetGridPosition(transform.position));
         }
     }
 
-    public bool IsMoving()
+    public GridSystem.GridPosition GetGridPosition()
     {
-        return elapsedMoveTime < moveTime;
+        return currentGridPosition;
     }
+
+    //MOVE ACTION
+
+    public bool IsMoving () => moveAction.IsMoving(); 
+
+    public bool Move(GridSystem.GridPosition targetGridPosition) => moveAction.Move(targetGridPosition);
+
+    //
 }
