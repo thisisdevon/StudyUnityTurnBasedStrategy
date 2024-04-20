@@ -20,13 +20,15 @@ public class CameraController : MonoBehaviour
         cinemachineTransposer = virtualCamera.GetCinemachineComponent<CinemachineTransposer>();
     }
 
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
+    {
+        UpdateMovement();
+        UpdateRotation();
+        UpdateZoom();
+    }
+
+    private void UpdateMovement()
     {
         Vector3 inputMoveDir = Vector3.zero;
         if (Input.GetKey(KeyCode.W))
@@ -48,7 +50,10 @@ public class CameraController : MonoBehaviour
 
         Vector3 moveVector = transform.forward * inputMoveDir.z + transform.right * inputMoveDir.x;
         transform.position = Vector3.Lerp(transform.position, transform.position + moveVector * moveSpeed, Time.deltaTime);
+    }
 
+    private void UpdateRotation()
+    {
         Vector3 rotationVector = Vector3.zero;
         if (Input.GetKey(KeyCode.Q))
         {
@@ -60,6 +65,10 @@ public class CameraController : MonoBehaviour
         }
 
         transform.eulerAngles = Vector3.Lerp(transform.eulerAngles, transform.eulerAngles + rotationVector * rotateSpeed, Time.deltaTime);
+    }
+
+    private void UpdateZoom()
+    {
         targetFollowOffset = cinemachineTransposer.m_FollowOffset;
         if (Input.mouseScrollDelta.y != 0)
         {
@@ -73,6 +82,5 @@ public class CameraController : MonoBehaviour
                 Time.deltaTime * zoomSpeed
             );
         }
-
     }
 }
