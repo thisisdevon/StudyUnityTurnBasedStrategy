@@ -61,5 +61,7 @@ public class UnitScript : MonoBehaviour
 
     public bool Move(GridSystem.GridPosition targetGridPosition) => moveAction.Move(targetGridPosition);
 
+    public List<GridSystem.GridPosition> GetValidActionGridPositionList() => moveAction.GetValidActionGridPositionList();
+
     //
 }

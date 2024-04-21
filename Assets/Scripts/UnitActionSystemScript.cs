@@ -36,8 +36,7 @@ public class UnitActionSystemScript : MonoBehaviour
                 {
                     GridSystem.GridPosition gridPosition = LevelGridScript.Instance.GetGridPosition(MouseWorldScript.GetPosition());
 
-                    if (LevelGridScript.Instance.IsValidGridPosition (gridPosition) && 
-                        Instance.selectedUnit.Move(gridPosition))
+                    if (LevelGridScript.Instance.IsValidGridPosition (gridPosition) && Instance.selectedUnit.Move(gridPosition))
                     {
                         Instance.selectedUnit = null;
                     }
