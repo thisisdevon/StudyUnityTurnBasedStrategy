@@ -43,25 +43,9 @@ public class UnitActionSystemScript : MonoBehaviour
         
         if (Input.GetMouseButtonDown(0))
         {
-            if (selectedUnit == null)
+            if (!TryHandleUnitSelection())
             {
-                TryHandleUnitSelection();
-            }
-            else
-            {
-                // in grid selection mode
-                if (!selectedUnit.IsMoving() && selectedAction == selectedUnit.GetMoveAction())
-                {
-                    GridSystem.GridPosition gridPosition = LevelGridScript.Instance.GetGridPosition(MouseWorldScript.GetPosition());
-
-                    if (LevelGridScript.Instance.IsValidGridPosition (gridPosition) && selectedUnit.GetMoveAction().TryToSetMoveParameters(gridPosition))
-                    {
-                        // Start Moving
-                        ExecuteSelectedAction(); // temporary change to ExecuteSelectedAction() later maybe
-                        hasStartedMoving = true;
-                        //Instance.selectedUnit = null;
-                    }
-                }
+                ExecuteSelectedAction();
             }
         }
     }
@@ -73,8 +57,42 @@ public class UnitActionSystemScript : MonoBehaviour
 
     private void ExecuteSelectedAction()
     {
-        SetIsRunningAction();
-        selectedAction.ActionExecute();
+        BaseAction.BaseActionParameters baseParameter = null;
+        switch (selectedAction)
+        {
+            case MoveAction moveAction:
+                if (selectedUnit.IsMoving())
+                {
+                    break;
+                }
+                GridSystem.GridPosition gridPosition = LevelGridScript.Instance.GetGridPosition(MouseWorldScript.GetPosition());
+                if (LevelGridScript.Instance.IsValidGridPosition(gridPosition)) // this is only checking if the grid is movable btw
+                {
+                    // Start Moving
+                    baseParameter = new MoveAction.MoveActionParameters(gridPosition);
+                }
+                break;
+            case SpinAction spinAction:
+                break;
+            default: 
+                break;
+        }
+        if (baseParameter == null)
+        {
+            return;
+        }
+        selectedAction.ActionExecute(baseParameter);
+        if (selectedAction.GetIsActive())
+        {
+            Debug.Log("Action executed");
+            hasStartedMoving = true;
+            SetIsRunningAction();
+        }
+        else
+        {
+            Debug.Log("Action cannot be executed");
+            hasStartedMoving = false;
+        }
     }
 
     private void CompleteSelectedAction()

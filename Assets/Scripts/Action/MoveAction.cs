@@ -6,6 +6,16 @@ using UnityEngine;
 
 public class MoveAction : BaseAction
 {
+    public class MoveActionParameters : BaseActionParameters
+    {  
+        public GridSystem.GridPosition targetGridPosition;
+
+        public MoveActionParameters(GridSystem.GridPosition targetGridPosition)
+        {
+            this.targetGridPosition = targetGridPosition;
+        }
+    }
+
     public const float MOVE_SPEED = 4f;
     public const float ROTATE_SPEED = 10f;
 
@@ -52,9 +62,10 @@ public class MoveAction : BaseAction
         }
     }
 
-    public bool TryToSetMoveParameters(GridSystem.GridPosition targetGridPosition)
+    public bool TryToSetMoveParameters()
     {
         List<GridSystem.GridPosition> validGridPositionList = GetValidActionGridPositionList(); 
+        GridSystem.GridPosition targetGridPosition = ((MoveActionParameters) baseActionParameter).targetGridPosition;
         if (!validGridPositionList.Contains(targetGridPosition))
         {
             return false;
@@ -107,20 +118,25 @@ public class MoveAction : BaseAction
         return "MOVE";
     }
 
-    public override void ActionSelected(Action onActionComplete)
+    public override void ActionSelected( Action onActionComplete)
     {
         GridSystemVisual.Instance.UpdateGridVisual();
         base.ActionSelected(onActionComplete);
     }
 
-    public override void ActionExecute()
+    public override void ActionExecute(BaseActionParameters baseActionParameter)
     {
-        base.ActionExecute(); //isactive true is here
+        base.ActionExecute(baseActionParameter); //isactive true is here
     }
 
     public override void ActionComplete()
     {
         GridSystemVisual.Instance.UpdateGridVisual();
         base.ActionComplete(); //isactive false is here
+    }
+
+    protected override bool IsActionValidToBeExecuted()
+    {
+        return TryToSetMoveParameters();
     }
 }

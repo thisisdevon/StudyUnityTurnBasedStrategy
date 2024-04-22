@@ -6,9 +6,11 @@ using UnityEngine;
 [RequireComponent(typeof(UnitScript))]
 public abstract class BaseAction : MonoBehaviour
 {
+    public class BaseActionParameters {  }
     protected UnitScript ownerUnit;
     protected bool isActive = false;
     protected Action onActionComplete;
+    protected BaseActionParameters baseActionParameter;
 
 
     protected virtual void Awake()
@@ -26,19 +28,26 @@ public abstract class BaseAction : MonoBehaviour
         return "Action";
     }
 
+    // Let the UnitActionSystemScript to handle the activation condition
+
+    // to be handled by SelectSelectedAction 
     public virtual void ActionSelected(Action onActionComplete)
     {
         this.onActionComplete = onActionComplete;
     }
 
-    public virtual void ActionExecute()
+    // to be handled by ExecuteSelectedAction 
+    public virtual void ActionExecute(BaseActionParameters baseActionParameter)
     {
-        isActive = true;
+        this.baseActionParameter = baseActionParameter;
+        isActive = IsActionValidToBeExecuted();
     }
 
+    // to be handled by CompletrSelectedAction 
     public virtual void ActionComplete()
     {
-        //UnitActionSystemScript.Instance.ClearIsRunningAction();
         isActive = false;
     }
+
+    protected abstract bool IsActionValidToBeExecuted();
 }

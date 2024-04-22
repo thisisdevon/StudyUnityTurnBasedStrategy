@@ -5,6 +5,16 @@ using UnityEngine;
 
 public class SpinAction : BaseAction
 {
+    public class SpinActionParameters : BaseActionParameters
+    {  
+        public int spinCount = 0;
+
+        public SpinActionParameters(int spinCount)
+        {
+            this.spinCount = spinCount;
+        }
+    }
+
     private float totalSpinAmount = 0f;
 
     public void StartSpinning()
@@ -22,7 +32,7 @@ public class SpinAction : BaseAction
         float spinAddAmount = 360f * Time.deltaTime;
         transform.eulerAngles += new Vector3(0, 3f, 0);
         totalSpinAmount += spinAddAmount;
-        if (totalSpinAmount >= 720f)
+        if (totalSpinAmount >= 360f * GetSpinCount())
         {
             ActionComplete();
         }
@@ -38,6 +48,11 @@ public class SpinAction : BaseAction
         Spin();
     }
 
+    private int GetSpinCount()
+    {
+        return ((SpinActionParameters) baseActionParameter).spinCount;
+    }
+
     public override string GetActionName()
     {
         return "SPIN";
@@ -46,18 +61,22 @@ public class SpinAction : BaseAction
     public override void ActionSelected(Action onActionComplete)
     {
         base.ActionSelected(onActionComplete);
-        ActionExecute(); // immediately activate
+        ActionExecute(new SpinActionParameters(2)); // immediately activate
     }
 
-    public override void ActionExecute()
+    public override void ActionExecute(BaseActionParameters baseActionParameter)
     {
-        StartSpinning();
-        base.ActionExecute();
+        base.ActionExecute(baseActionParameter);
     }
 
     public override void ActionComplete()
     {
         StopSpinning();
         base.ActionComplete();
+    }
+
+    protected override bool IsActionValidToBeExecuted()
+    {
+        return true;
     }
 }
