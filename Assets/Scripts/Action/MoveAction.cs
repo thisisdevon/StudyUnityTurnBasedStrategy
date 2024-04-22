@@ -1,34 +1,36 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(UnitScript))]
-public class MoveAction : MonoBehaviour
+
+public class MoveAction : BaseAction
 {
     public const float MOVE_SPEED = 4f;
     public const float ROTATE_SPEED = 10f;
 
     [SerializeField] private AnimationCurve moveCurve;
     [SerializeField] private int maxMoveDistance = 4;
-    private UnitScript ownerUnit;
     private Vector3 moveEndPosition;
     private Vector3 moveStartPosition;
     private float moveTime = -1f;
     private float elapsedMoveTime = 0f;
 
-    void Awake()
+    protected override void Awake()
     {
-        ownerUnit = GetComponent<UnitScript>();
-    }
-
-    void Start()
-    {
+        base.Awake();
+        moveEndPosition = Vector3.zero;
+        moveStartPosition = Vector3.zero;
         moveTime = -1f;
         elapsedMoveTime = 0f;
     }
 
     void Update()
     {
+        if (!isActive) 
+        {
+            return;
+        }
         if (IsMoving())
         {
             elapsedMoveTime += Time.deltaTime;
@@ -42,10 +44,16 @@ public class MoveAction : MonoBehaviour
 
             transform.position = newPosition;
         }
+        else
+        {
+            onActionComplete();
+            isActive = false;
+        }
     }
 
-    public bool Move(GridSystem.GridPosition targetGridPosition)
+    public bool Move(GridSystem.GridPosition targetGridPosition, Action onActionComplete)
     {
+        this.onActionComplete = onActionComplete;
         List<GridSystem.GridPosition> validGridPositionList = GetValidActionGridPositionList(); 
         if (!validGridPositionList.Contains(targetGridPosition))
         {
@@ -57,7 +65,7 @@ public class MoveAction : MonoBehaviour
         elapsedMoveTime = 0f;
 
         moveTime = Vector3.Distance(this.moveEndPosition, this.moveStartPosition) / MOVE_SPEED;
-
+        isActive = true;
         return true;
     }
 

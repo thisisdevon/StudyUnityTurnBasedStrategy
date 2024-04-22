@@ -9,6 +9,11 @@ public class UnitActionSystemScript : MonoBehaviour
     [SerializeField] private LayerMask unitLayerMask;
     public static UnitActionSystemScript Instance { get; private set; }
     private UnitScript selectedUnit;
+    private bool hasStartedMoving = false;
+
+    private bool isRunningAnAction; //isBusy
+
+
 
     void Awake()
     {
@@ -24,6 +29,17 @@ public class UnitActionSystemScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isRunningAnAction)
+        {
+            if (HasUnitStoppedMoving())
+            {
+                hasStartedMoving = false;
+                selectedUnit = null;
+                ClearIsRunningAction();
+            }
+            return;
+        }
+        
         if (Input.GetMouseButtonDown(0))
         {
             if (selectedUnit == null)
@@ -32,23 +48,32 @@ public class UnitActionSystemScript : MonoBehaviour
             }
             else
             {
-                if (!Instance.selectedUnit.IsMoving())
+                if (!selectedUnit.IsMoving())
                 {
                     GridSystem.GridPosition gridPosition = LevelGridScript.Instance.GetGridPosition(MouseWorldScript.GetPosition());
 
-                    if (LevelGridScript.Instance.IsValidGridPosition (gridPosition) && Instance.selectedUnit.Move(gridPosition))
+                    if (LevelGridScript.Instance.IsValidGridPosition (gridPosition) && selectedUnit.Move(gridPosition, ClearIsRunningAction))
                     {
-                        Instance.selectedUnit = null;
+                        // Start Moving
+                        SetIsRunningAction();
+                        hasStartedMoving = true;
+                        //Instance.selectedUnit = null;
                     }
                 }
             }
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            SetIsRunningAction();
+            selectedUnit.GetSpinAction().StartSpinning(ClearIsRunningAction);
         }
     }
 
     private bool TryHandleUnitSelection()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit raycastHitInfo, float.MaxValue, Instance.unitLayerMask))
+        if (Physics.Raycast(ray, out RaycastHit raycastHitInfo, float.MaxValue, unitLayerMask))
         {
             if (raycastHitInfo.transform.TryGetComponent<UnitScript>(out UnitScript unitHit))
             {
@@ -61,12 +86,27 @@ public class UnitActionSystemScript : MonoBehaviour
 
     private void SetSelectedUnit(UnitScript unitSelected)
     {
-        Instance.selectedUnit = unitSelected;
+        selectedUnit = unitSelected;
         OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public UnitScript GetSelectedUnit()
     {
         return Instance.selectedUnit;
+    }
+
+    public bool HasUnitStoppedMoving()
+    {
+        return hasStartedMoving && !selectedUnit.IsMoving();
+    }
+
+    private void SetIsRunningAction()
+    {
+        this.isRunningAnAction = true;
+    }
+
+    private void ClearIsRunningAction()
+    {
+        this.isRunningAnAction = false;
     }
 }
