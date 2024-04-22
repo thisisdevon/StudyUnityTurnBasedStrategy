@@ -20,4 +20,9 @@ public abstract class BaseAction : MonoBehaviour
     {
         return isActive;
     }
+
+    public virtual string GetActionName()
+    {
+        return "Action";
+    }
 }

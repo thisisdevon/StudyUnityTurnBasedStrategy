@@ -12,11 +12,13 @@ public class UnitScript : MonoBehaviour
     private GridSystem.GridPosition currentGridPosition;
     private MoveAction moveAction;
     private SpinAction spinAction;
+    private BaseAction[] baseActionArray;
 
     void Awake()
     {
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
+        baseActionArray = GetComponents<BaseAction>();
     }
 
     // Start is called before the first frame update
@@ -57,6 +59,13 @@ public class UnitScript : MonoBehaviour
         return currentGridPosition;
     }
 
+    //BASE ACTION
+
+    public BaseAction[] GetBaseActionArray()
+    {
+        return baseActionArray;
+    }
+
     //MOVE ACTION
 
     public bool IsMoving () => moveAction.IsMoving(); 
@@ -64,6 +73,11 @@ public class UnitScript : MonoBehaviour
     public bool Move(GridSystem.GridPosition targetGridPosition, Action actionEnd) => moveAction.Move(targetGridPosition, actionEnd);
 
     public List<GridSystem.GridPosition> GetValidActionGridPositionList() => moveAction.GetValidActionGridPositionList();
+
+    public MoveAction GetMoveAction()
+    {
+        return moveAction;
+    }
 
     //
 

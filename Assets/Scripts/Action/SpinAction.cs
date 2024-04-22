@@ -6,7 +6,7 @@ using UnityEngine;
 public class SpinAction : BaseAction
 {
     private float totalSpinAmount = 0f;
-    
+
     public void StartSpinning(Action onActionComplete)
     {
         isActive = true;
@@ -39,5 +39,10 @@ public class SpinAction : BaseAction
             return;
         }
         Spin();
+    }
+
+    public override string GetActionName()
+    {
+        return "SPIN";
     }
 }

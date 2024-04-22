@@ -9,6 +9,7 @@ public class UnitActionSystemScript : MonoBehaviour
     [SerializeField] private LayerMask unitLayerMask;
     public static UnitActionSystemScript Instance { get; private set; }
     private UnitScript selectedUnit;
+    private BaseAction selectedAction;
     private bool hasStartedMoving = false;
 
     private bool isRunningAnAction; //isBusy
@@ -34,7 +35,7 @@ public class UnitActionSystemScript : MonoBehaviour
             if (HasUnitStoppedMoving())
             {
                 hasStartedMoving = false;
-                selectedUnit = null;
+                ClearSelectedUnit();
                 ClearIsRunningAction();
             }
             return;
@@ -70,6 +71,11 @@ public class UnitActionSystemScript : MonoBehaviour
         }
     }
 
+    private void HandleSelectedAction()
+    {
+        
+    }
+
     private bool TryHandleUnitSelection()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -84,9 +90,21 @@ public class UnitActionSystemScript : MonoBehaviour
         return false;
     }
 
+    public void SetSelectedAction(BaseAction baseAction)
+    {
+        selectedAction = baseAction;
+    }
+
     private void SetSelectedUnit(UnitScript unitSelected)
     {
         selectedUnit = unitSelected;
+        SetSelectedAction(unitSelected.GetMoveAction());
+        OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void ClearSelectedUnit()
+    {
+        selectedUnit = null;
         OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
     }
 

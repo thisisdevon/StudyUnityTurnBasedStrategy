@@ -103,4 +103,9 @@ public class MoveAction : BaseAction
             !LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition)
             ;
     }
+
+    public override string GetActionName()
+    {
+        return "MOVE";
+    }
 }
