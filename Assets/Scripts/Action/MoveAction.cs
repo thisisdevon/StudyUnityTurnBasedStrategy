@@ -46,14 +46,14 @@ public class MoveAction : BaseAction
         }
         else
         {
+            ActionComplete();
             onActionComplete();
             isActive = false;
         }
     }
 
-    public bool Move(GridSystem.GridPosition targetGridPosition, Action onActionComplete)
+    public bool TryToSetMoveParameters(GridSystem.GridPosition targetGridPosition)
     {
-        this.onActionComplete = onActionComplete;
         List<GridSystem.GridPosition> validGridPositionList = GetValidActionGridPositionList(); 
         if (!validGridPositionList.Contains(targetGridPosition))
         {
@@ -65,14 +65,12 @@ public class MoveAction : BaseAction
         elapsedMoveTime = 0f;
 
         moveTime = Vector3.Distance(this.moveEndPosition, this.moveStartPosition) / MOVE_SPEED;
-        isActive = true;
         return true;
     }
 
-
     public bool IsMoving()
     {
-        return elapsedMoveTime < moveTime;
+        return elapsedMoveTime < moveTime && isActive;
     }
 
     public List<GridSystem.GridPosition> GetValidActionGridPositionList()
@@ -101,11 +99,28 @@ public class MoveAction : BaseAction
             gridPosition != ownerUnit.GetGridPosition() &&
             LevelGridScript.Instance.IsValidGridPosition(gridPosition) &&
             !LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition)
-            ;
+        ;
     }
 
     public override string GetActionName()
     {
         return "MOVE";
+    }
+
+    public override void ActionSelected(Action onActionComplete)
+    {
+        GridSystemVisual.Instance.UpdateGridVisual();
+        base.ActionSelected(onActionComplete);
+    }
+
+    public override void ActionExecute()
+    {
+        base.ActionExecute(); //isactive true is here
+    }
+
+    public override void ActionComplete()
+    {
+        GridSystemVisual.Instance.UpdateGridVisual();
+        base.ActionComplete(); //isactive false is here
     }
 }

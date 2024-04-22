@@ -25,4 +25,20 @@ public abstract class BaseAction : MonoBehaviour
     {
         return "Action";
     }
+
+    public virtual void ActionSelected(Action onActionComplete)
+    {
+        this.onActionComplete = onActionComplete;
+    }
+
+    public virtual void ActionExecute()
+    {
+        isActive = true;
+    }
+
+    public virtual void ActionComplete()
+    {
+        //UnitActionSystemScript.Instance.ClearIsRunningAction();
+        isActive = false;
+    }
 }

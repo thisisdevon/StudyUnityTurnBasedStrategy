@@ -7,15 +7,13 @@ public class SpinAction : BaseAction
 {
     private float totalSpinAmount = 0f;
 
-    public void StartSpinning(Action onActionComplete)
+    public void StartSpinning()
     {
-        isActive = true;
-        this.onActionComplete = onActionComplete;
+        //no need to do anything
     }
 
     public void StopSpinning()
     {
-        isActive = false;
         totalSpinAmount = 0f;
     }
 
@@ -26,8 +24,7 @@ public class SpinAction : BaseAction
         totalSpinAmount += spinAddAmount;
         if (totalSpinAmount >= 720f)
         {
-            StopSpinning();
-            onActionComplete();
+            ActionComplete();
         }
     }
 
@@ -44,5 +41,23 @@ public class SpinAction : BaseAction
     public override string GetActionName()
     {
         return "SPIN";
+    }
+
+    public override void ActionSelected(Action onActionComplete)
+    {
+        base.ActionSelected(onActionComplete);
+        ActionExecute(); // immediately activate
+    }
+
+    public override void ActionExecute()
+    {
+        StartSpinning();
+        base.ActionExecute();
+    }
+
+    public override void ActionComplete()
+    {
+        StopSpinning();
+        base.ActionComplete();
     }
 }

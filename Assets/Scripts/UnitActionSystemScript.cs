@@ -36,7 +36,7 @@ public class UnitActionSystemScript : MonoBehaviour
             {
                 hasStartedMoving = false;
                 ClearSelectedUnit();
-                ClearIsRunningAction();
+                CompleteSelectedAction();
             }
             return;
         }
@@ -49,31 +49,38 @@ public class UnitActionSystemScript : MonoBehaviour
             }
             else
             {
-                if (!selectedUnit.IsMoving())
+                // in grid selection mode
+                if (!selectedUnit.IsMoving() && selectedAction == selectedUnit.GetMoveAction())
                 {
                     GridSystem.GridPosition gridPosition = LevelGridScript.Instance.GetGridPosition(MouseWorldScript.GetPosition());
 
-                    if (LevelGridScript.Instance.IsValidGridPosition (gridPosition) && selectedUnit.Move(gridPosition, ClearIsRunningAction))
+                    if (LevelGridScript.Instance.IsValidGridPosition (gridPosition) && selectedUnit.GetMoveAction().TryToSetMoveParameters(gridPosition))
                     {
                         // Start Moving
-                        SetIsRunningAction();
+                        ExecuteSelectedAction(); // temporary change to ExecuteSelectedAction() later maybe
                         hasStartedMoving = true;
                         //Instance.selectedUnit = null;
                     }
                 }
             }
         }
-
-        if (Input.GetMouseButtonDown(1))
-        {
-            SetIsRunningAction();
-            selectedUnit.GetSpinAction().StartSpinning(ClearIsRunningAction);
-        }
     }
 
-    private void HandleSelectedAction()
+    private void SelectSelectedAction() 
     {
-        
+        selectedAction.ActionSelected(ClearSelectedUnit);
+    }
+
+    private void ExecuteSelectedAction()
+    {
+        SetIsRunningAction();
+        selectedAction.ActionExecute();
+    }
+
+    private void CompleteSelectedAction()
+    {
+        ClearIsRunningAction();
+        selectedAction.ActionComplete();
     }
 
     private bool TryHandleUnitSelection()
@@ -90,9 +97,10 @@ public class UnitActionSystemScript : MonoBehaviour
         return false;
     }
 
-    public void SetSelectedAction(BaseAction baseAction)
+    public void SetSelectedAction(BaseAction baseAction) // to be called by ActionButtonUI
     {
         selectedAction = baseAction;
+        SelectSelectedAction();
     }
 
     private void SetSelectedUnit(UnitScript unitSelected)
@@ -115,7 +123,7 @@ public class UnitActionSystemScript : MonoBehaviour
 
     public bool HasUnitStoppedMoving()
     {
-        return hasStartedMoving && !selectedUnit.IsMoving();
+        return selectedAction == selectedUnit.GetMoveAction() && hasStartedMoving && !selectedUnit.IsMoving();
     }
 
     private void SetIsRunningAction()
