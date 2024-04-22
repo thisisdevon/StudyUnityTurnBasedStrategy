@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UnitActionSystemScript : MonoBehaviour
 {
@@ -13,8 +14,6 @@ public class UnitActionSystemScript : MonoBehaviour
     private bool hasStartedMoving = false;
 
     private bool isRunningAnAction; //isBusy
-
-
 
     void Awake()
     {
@@ -30,17 +29,19 @@ public class UnitActionSystemScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isRunningAnAction)
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+        if (IsBusy())
         {
             if (HasUnitStoppedMoving())
             {
                 hasStartedMoving = false;
                 ClearSelectedUnit();
-                CompleteSelectedAction();
             }
             return;
         }
-        
         if (Input.GetMouseButtonDown(0))
         {
             if (!TryHandleUnitSelection())
@@ -52,37 +53,22 @@ public class UnitActionSystemScript : MonoBehaviour
 
     private void SelectSelectedAction() 
     {
-        selectedAction.ActionSelected(ClearSelectedUnit);
+        if (selectedAction != null)
+        {
+            selectedAction.ActionSelected(ClearSelectedUnit);
+        }
     }
 
     private void ExecuteSelectedAction()
     {
-        BaseAction.BaseActionParameters baseParameter = null;
-        switch (selectedAction)
-        {
-            case MoveAction moveAction:
-                if (selectedUnit.IsMoving())
-                {
-                    break;
-                }
-                GridSystem.GridPosition gridPosition = LevelGridScript.Instance.GetGridPosition(MouseWorldScript.GetPosition());
-                if (LevelGridScript.Instance.IsValidGridPosition(gridPosition)) // this is only checking if the grid is movable btw
-                {
-                    // Start Moving
-                    baseParameter = new MoveAction.MoveActionParameters(gridPosition);
-                }
-                break;
-            case SpinAction spinAction:
-                break;
-            default: 
-                break;
-        }
-        if (baseParameter == null)
+        GridSystem.GridPosition gridPosition = LevelGridScript.Instance.GetGridPosition(MouseWorldScript.GetPosition());
+        if (!LevelGridScript.Instance.IsValidGridPosition(gridPosition)) // this is only checking if the grid is movable btw
         {
             return;
+            // Start Moving
         }
-        selectedAction.ActionExecute(baseParameter);
-        if (selectedAction.GetIsActive())
+        ;
+        if (selectedAction.ActionExecute(gridPosition))
         {
             Debug.Log("Action executed");
             hasStartedMoving = true;
@@ -95,18 +81,12 @@ public class UnitActionSystemScript : MonoBehaviour
         }
     }
 
-    private void CompleteSelectedAction()
-    {
-        ClearIsRunningAction();
-        selectedAction.ActionComplete();
-    }
-
     private bool TryHandleUnitSelection()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit raycastHitInfo, float.MaxValue, unitLayerMask))
         {
-            if (raycastHitInfo.transform.TryGetComponent<UnitScript>(out UnitScript unitHit))
+            if (raycastHitInfo.transform.TryGetComponent<UnitScript>(out UnitScript unitHit) && selectedUnit != unitHit)
             {
                 SetSelectedUnit(unitHit);
                 return true;
@@ -117,6 +97,10 @@ public class UnitActionSystemScript : MonoBehaviour
 
     public void SetSelectedAction(BaseAction baseAction) // to be called by ActionButtonUI
     {
+        if (IsBusy())
+        {
+            return;
+        }
         selectedAction = baseAction;
         SelectSelectedAction();
     }
@@ -130,18 +114,25 @@ public class UnitActionSystemScript : MonoBehaviour
 
     private void ClearSelectedUnit()
     {
+        ClearIsRunningAction();
         selectedUnit = null;
+        SetSelectedAction(null);
         OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public UnitScript GetSelectedUnit()
     {
-        return Instance.selectedUnit;
+        return selectedUnit;
+    }
+
+    public BaseAction GetSelectedAction()
+    {
+        return selectedAction;
     }
 
     public bool HasUnitStoppedMoving()
     {
-        return selectedAction == selectedUnit.GetMoveAction() && hasStartedMoving && !selectedUnit.IsMoving();
+        return selectedUnit != null && selectedAction == selectedUnit.GetMoveAction() && hasStartedMoving && !selectedUnit.IsMoving();
     }
 
     private void SetIsRunningAction()
@@ -152,5 +143,10 @@ public class UnitActionSystemScript : MonoBehaviour
     private void ClearIsRunningAction()
     {
         this.isRunningAnAction = false;
+    }
+
+    public bool IsBusy()
+    {
+        return this.isRunningAnAction;
     }
 }

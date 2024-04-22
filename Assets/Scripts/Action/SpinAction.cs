@@ -5,34 +5,14 @@ using UnityEngine;
 
 public class SpinAction : BaseAction
 {
-    public class SpinActionParameters : BaseActionParameters
-    {  
-        public int spinCount = 0;
-
-        public SpinActionParameters(int spinCount)
-        {
-            this.spinCount = spinCount;
-        }
-    }
-
     private float totalSpinAmount = 0f;
-
-    public void StartSpinning()
-    {
-        //no need to do anything
-    }
-
-    public void StopSpinning()
-    {
-        totalSpinAmount = 0f;
-    }
 
     private void Spin()
     {
         float spinAddAmount = 360f * Time.deltaTime;
         transform.eulerAngles += new Vector3(0, 3f, 0);
         totalSpinAmount += spinAddAmount;
-        if (totalSpinAmount >= 360f * GetSpinCount())
+        if (totalSpinAmount >= 360f * 3)
         {
             ActionComplete();
         }
@@ -48,11 +28,6 @@ public class SpinAction : BaseAction
         Spin();
     }
 
-    private int GetSpinCount()
-    {
-        return ((SpinActionParameters) baseActionParameter).spinCount;
-    }
-
     public override string GetActionName()
     {
         return "SPIN";
@@ -61,22 +36,24 @@ public class SpinAction : BaseAction
     public override void ActionSelected(Action onActionComplete)
     {
         base.ActionSelected(onActionComplete);
-        ActionExecute(new SpinActionParameters(2)); // immediately activate
     }
 
-    public override void ActionExecute(BaseActionParameters baseActionParameter)
+    public override bool ActionExecute(GridSystem.GridPosition targetGridPosition)
     {
-        base.ActionExecute(baseActionParameter);
+        totalSpinAmount = 0f;
+        return base.ActionExecute(targetGridPosition);
     }
 
     public override void ActionComplete()
     {
-        StopSpinning();
         base.ActionComplete();
     }
 
-    protected override bool IsActionValidToBeExecuted()
+    public override List<GridSystem.GridPosition> GetValidActionGridPositionList()
     {
-        return true;
+        List<GridSystem.GridPosition> result = new List<GridSystem.GridPosition>{
+            ownerUnit.GetGridPosition()
+        };
+        return result;
     }
 }

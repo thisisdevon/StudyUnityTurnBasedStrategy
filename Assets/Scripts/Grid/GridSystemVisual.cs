@@ -59,7 +59,7 @@ public class GridSystemVisual : MonoBehaviour
     {
         foreach (GridSystem.GridPosition gridPosition in gridPositionList)
         {
-                gridSystemVisualSingleArray[gridPosition.x, gridPosition.z].Show();
+            gridSystemVisualSingleArray[gridPosition.x, gridPosition.z].Show();
         }
     }
 
@@ -67,11 +67,11 @@ public class GridSystemVisual : MonoBehaviour
     {
         HideAllGridPosition();
 
-        UnitScript selectedUnit = UnitActionSystemScript.Instance.GetSelectedUnit();
+        BaseAction selectedAction = UnitActionSystemScript.Instance.GetSelectedAction();
 
-        if (selectedUnit != null)
+        if (selectedAction != null)
         {
-            ShowGridPositionList(selectedUnit.GetValidActionGridPositionList());
+            ShowGridPositionList(selectedAction.GetValidActionGridPositionList());
         }
     }
 }

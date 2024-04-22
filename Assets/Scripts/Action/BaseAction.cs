@@ -6,22 +6,28 @@ using UnityEngine;
 [RequireComponent(typeof(UnitScript))]
 public abstract class BaseAction : MonoBehaviour
 {
-    public class BaseActionParameters {  }
     protected UnitScript ownerUnit;
     protected bool isActive = false;
     protected Action onActionComplete;
-    protected BaseActionParameters baseActionParameter;
+    protected List<GridSystem.GridPosition> validGridPositionList;
 
 
     protected virtual void Awake()
     {
         ownerUnit = GetComponent<UnitScript>();
+        validGridPositionList = new List<GridSystem.GridPosition>();
     }
 
     public bool GetIsActive()
     {
         return isActive;
     }
+
+    public bool IsSelectedGridWithinValidList(GridSystem.GridPosition gridPosition)
+    {
+        return validGridPositionList.Contains(gridPosition);
+    }
+
 
     public virtual string GetActionName()
     {
@@ -33,21 +39,28 @@ public abstract class BaseAction : MonoBehaviour
     // to be handled by SelectSelectedAction 
     public virtual void ActionSelected(Action onActionComplete)
     {
+        validGridPositionList = GetValidActionGridPositionList();
+        GridSystemVisual.Instance.UpdateGridVisual();
         this.onActionComplete = onActionComplete;
     }
 
     // to be handled by ExecuteSelectedAction 
-    public virtual void ActionExecute(BaseActionParameters baseActionParameter)
+    public virtual bool ActionExecute(GridSystem.GridPosition targetGridPosition)
     {
-        this.baseActionParameter = baseActionParameter;
-        isActive = IsActionValidToBeExecuted();
+        isActive = IsSelectedGridWithinValidList(targetGridPosition);
+        return isActive;
     }
 
     // to be handled by CompletrSelectedAction 
     public virtual void ActionComplete()
     {
         isActive = false;
+        onActionComplete();
+        GridSystemVisual.Instance.UpdateGridVisual();
     }
 
-    protected abstract bool IsActionValidToBeExecuted();
+    public virtual List<GridSystem.GridPosition> GetValidActionGridPositionList()
+    {
+        return new List<GridSystem.GridPosition>();
+    }
 }
