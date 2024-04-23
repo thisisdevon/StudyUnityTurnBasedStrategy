@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 public class UnitActionSystemScript : MonoBehaviour
 {
     public event EventHandler OnSelectedUnitChanged;
+    public event EventHandler OnSelectedActionChanged;
+    public event EventHandler<bool> OnBusyChanged;
     [SerializeField] private LayerMask unitLayerMask;
     public static UnitActionSystemScript Instance { get; private set; }
     private UnitScript selectedUnit;
@@ -24,6 +26,11 @@ public class UnitActionSystemScript : MonoBehaviour
             return;
         }
         Instance = this;
+    }
+
+    void Start()
+    {
+        ClearIsRunningAction();
     }
 
     // Update is called once per frame
@@ -86,10 +93,9 @@ public class UnitActionSystemScript : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit raycastHitInfo, float.MaxValue, unitLayerMask))
         {
-            if (raycastHitInfo.transform.TryGetComponent<UnitScript>(out UnitScript unitHit) && selectedUnit != unitHit)
+            if (raycastHitInfo.transform.TryGetComponent<UnitScript>(out UnitScript unitHit))
             {
-                SetSelectedUnit(unitHit);
-                return true;
+                return SetSelectedUnit(unitHit);
             }
         }
         return false;
@@ -97,26 +103,44 @@ public class UnitActionSystemScript : MonoBehaviour
 
     public void SetSelectedAction(BaseAction baseAction) // to be called by ActionButtonUI
     {
-        if (IsBusy())
-        {
-            return;
-        }
         selectedAction = baseAction;
         SelectSelectedAction();
+        OnSelectedActionChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private void SetSelectedUnit(UnitScript unitSelected)
+    private bool SetSelectedUnit(UnitScript unitSelected)
     {
+        if (IsBusy())
+        {
+            //the unit is still performing the selected action
+            return false;
+        }
+
+        if (unitSelected == selectedUnit)
+        {
+            return false;
+        }
+
+
         selectedUnit = unitSelected;
-        SetSelectedAction(unitSelected.GetMoveAction());
         OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
+
+        if (selectedUnit != null)
+        {
+            SetSelectedAction(unitSelected.GetMoveAction());
+        }
+        else
+        {
+            SetSelectedAction(null);
+        }
+        return true;
     }
 
     private void ClearSelectedUnit()
     {
+        //used to clear unit and action selection after an action is complete
         ClearIsRunningAction();
-        selectedUnit = null;
-        SetSelectedAction(null);
+        SetSelectedUnit(null);
         OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
     }
 
@@ -138,11 +162,13 @@ public class UnitActionSystemScript : MonoBehaviour
     private void SetIsRunningAction()
     {
         this.isRunningAnAction = true;
+        OnBusyChanged?.Invoke(this, this.isRunningAnAction);
     }
 
     private void ClearIsRunningAction()
     {
         this.isRunningAnAction = false;
+        OnBusyChanged?.Invoke(this, this.isRunningAnAction);
     }
 
     public bool IsBusy()
