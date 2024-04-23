@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UnitActionSystemUI : MonoBehaviour
 {
     [SerializeField] private ActionButtonUI actionButtonPrefab;
     [SerializeField] private Transform actionButtonContainer;
+    [SerializeField] private TextMeshProUGUI actionPointsText;
     public static UnitActionSystemUI Instance { get; private set; }
 
     private List<ActionButtonUI> actionButtonList;
@@ -27,17 +29,25 @@ public class UnitActionSystemUI : MonoBehaviour
     {
         UnitActionSystemScript.Instance.OnSelectedUnitChanged += UnitActionSystemScript_OnSelectedUnitChanged;
         UnitActionSystemScript.Instance.OnSelectedActionChanged += UnitActionSystemScript_OnSelectedActionChanged;
+        UnitActionSystemScript.Instance.OnActionExecute += UnitActionSystemScript_OnActionExecute;
+        UpdateActionPoints();
         actionButtonList = new List<ActionButtonUI>();
     }
 
     private void UnitActionSystemScript_OnSelectedUnitChanged(object sender, EventArgs e)
     {
         CreateUnitActionButtons();
+        UpdateActionPoints();
     }
 
     public void UnitActionSystemScript_OnSelectedActionChanged(object sender, EventArgs e)
     {
         UpdateSelectedVisual();
+    }
+
+    public void UnitActionSystemScript_OnActionExecute(object sender, EventArgs e)
+    {
+        UpdateActionPoints();
     }
 
     private void CreateUnitActionButtons()
@@ -68,5 +78,15 @@ public class UnitActionSystemUI : MonoBehaviour
         {
             actionButton.SetSelected(actionButton.GetBaseAction() == UnitActionSystemScript.Instance.GetSelectedAction());
         }
+    }
+
+    private void UpdateActionPoints()
+    {
+        string text = "";
+        if (UnitActionSystemScript.Instance.GetSelectedUnit() != null)
+        {
+            text = "Action points: " + UnitActionSystemScript.Instance.GetSelectedUnit().GetActionPoints();
+        }
+        actionPointsText.text = text;
     }
 }

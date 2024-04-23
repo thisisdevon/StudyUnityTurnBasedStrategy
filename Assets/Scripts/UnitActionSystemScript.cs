@@ -8,6 +8,7 @@ public class UnitActionSystemScript : MonoBehaviour
 {
     public event EventHandler OnSelectedUnitChanged;
     public event EventHandler OnSelectedActionChanged;
+    public event EventHandler OnActionExecute;
     public event EventHandler<bool> OnBusyChanged;
     [SerializeField] private LayerMask unitLayerMask;
     public static UnitActionSystemScript Instance { get; private set; }
@@ -78,6 +79,7 @@ public class UnitActionSystemScript : MonoBehaviour
         if (selectedAction.ActionExecute(gridPosition))
         {
             Debug.Log("Action executed");
+            OnActionExecute?.Invoke(this, null);
             hasStartedMoving = true;
             SetIsRunningAction();
         }

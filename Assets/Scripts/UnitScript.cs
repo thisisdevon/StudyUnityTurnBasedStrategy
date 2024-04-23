@@ -13,6 +13,7 @@ public class UnitScript : MonoBehaviour
     private MoveAction moveAction;
     private SpinAction spinAction;
     private BaseAction[] baseActionArray;
+    private int actionPoints = 2;
 
     void Awake()
     {
@@ -77,10 +78,33 @@ public class UnitScript : MonoBehaviour
         return moveAction;
     }
 
-    //
-
     public SpinAction GetSpinAction()
     {
         return spinAction;
+    }
+
+    public bool TryToExecuteAction(BaseAction baseAction)
+    {
+        if (CanExecuteAction(baseAction))
+        {
+            SpendActionPoints(baseAction.GetActionPointsCost());
+            return true;
+        }
+        return false;
+    }
+
+    private bool CanExecuteAction(BaseAction baseAction)
+    {
+        return actionPoints >= baseAction.GetActionPointsCost();
+    }
+
+    private void SpendActionPoints(int spentAmount)
+    {
+        actionPoints -= spentAmount;
+    }
+
+    public int GetActionPoints()
+    {
+        return actionPoints;
     }
 }
