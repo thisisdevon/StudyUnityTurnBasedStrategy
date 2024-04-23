@@ -5,15 +5,16 @@ using UnityEngine;
 
 public class UnitScript : MonoBehaviour
 {
+    private const int ACTION_POINTS_INIT = 2;
     public event EventHandler OnUnitStopMoving;
-    //public event EventHandler<UnitScript> OnUnitMoving;
+    public static event EventHandler OnAnyActionPointsChanged;
     [SerializeField] private Animator unitAnimator;
 
     private GridSystem.GridPosition currentGridPosition;
     private MoveAction moveAction;
     private SpinAction spinAction;
     private BaseAction[] baseActionArray;
-    private int actionPoints = 2;
+    private int actionPoints;
 
     void Awake()
     {
@@ -25,9 +26,23 @@ public class UnitScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
         this.currentGridPosition = LevelGridScript.Instance.GetGridPosition(transform.position);
         LevelGridScript.Instance.AssignUnit(this);
         LevelGridScript.Instance.GetGridObject(this.currentGridPosition).UnitEnterGrid(this);
+        ResetActionPoints();
+    }
+
+    private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
+    {
+        ResetActionPoints();
+    }
+
+    private void ResetActionPoints()
+    {
+        actionPoints = ACTION_POINTS_INIT;
+        
+        OnAnyActionPointsChanged?.Invoke(this, null);
     }
 
     public void UpdateGridPosition(GridSystem.GridPosition gridPosition)
@@ -101,6 +116,7 @@ public class UnitScript : MonoBehaviour
     private void SpendActionPoints(int spentAmount)
     {
         actionPoints -= spentAmount;
+        OnAnyActionPointsChanged?.Invoke(this, null);
     }
 
     public int GetActionPoints()

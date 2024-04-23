@@ -10,34 +10,23 @@ public class UnitActionSystemUI : MonoBehaviour
     [SerializeField] private ActionButtonUI actionButtonPrefab;
     [SerializeField] private Transform actionButtonContainer;
     [SerializeField] private TextMeshProUGUI actionPointsText;
-    public static UnitActionSystemUI Instance { get; private set; }
 
     private List<ActionButtonUI> actionButtonList;
-
-    void Awake()
-    {
-        if (Instance != null)
-        {
-            Debug.Log("Multiple UnitActionSystemUI detected");
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-    }
 
     void Start()
     {
         UnitActionSystemScript.Instance.OnSelectedUnitChanged += UnitActionSystemScript_OnSelectedUnitChanged;
         UnitActionSystemScript.Instance.OnSelectedActionChanged += UnitActionSystemScript_OnSelectedActionChanged;
         UnitActionSystemScript.Instance.OnActionExecute += UnitActionSystemScript_OnActionExecute;
-        UpdateActionPoints();
+        UnitScript.OnAnyActionPointsChanged += UnitScript_OnAnyActionPointsChanged;
+        UpdateActionPointsText();
         actionButtonList = new List<ActionButtonUI>();
     }
 
     private void UnitActionSystemScript_OnSelectedUnitChanged(object sender, EventArgs e)
     {
         CreateUnitActionButtons();
-        UpdateActionPoints();
+        UpdateActionPointsText();
     }
 
     public void UnitActionSystemScript_OnSelectedActionChanged(object sender, EventArgs e)
@@ -47,7 +36,12 @@ public class UnitActionSystemUI : MonoBehaviour
 
     public void UnitActionSystemScript_OnActionExecute(object sender, EventArgs e)
     {
-        UpdateActionPoints();
+        UpdateActionPointsText();
+    }
+
+    private void UnitScript_OnAnyActionPointsChanged(object sender, EventArgs e)
+    {
+        UpdateActionPointsText();
     }
 
     private void CreateUnitActionButtons()
@@ -80,7 +74,7 @@ public class UnitActionSystemUI : MonoBehaviour
         }
     }
 
-    private void UpdateActionPoints()
+    private void UpdateActionPointsText()
     {
         string text = "";
         if (UnitActionSystemScript.Instance.GetSelectedUnit() != null)

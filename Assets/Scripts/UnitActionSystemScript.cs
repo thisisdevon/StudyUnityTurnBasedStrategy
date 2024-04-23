@@ -69,13 +69,17 @@ public class UnitActionSystemScript : MonoBehaviour
 
     private void ExecuteSelectedAction()
     {
+        if (selectedAction == null)
+        {
+            return;
+        }
         GridSystem.GridPosition gridPosition = LevelGridScript.Instance.GetGridPosition(MouseWorldScript.GetPosition());
         if (!LevelGridScript.Instance.IsValidGridPosition(gridPosition)) // this is only checking if the grid is movable btw
         {
             return;
             // Start Moving
         }
-        ;
+        
         if (selectedAction.ActionExecute(gridPosition))
         {
             Debug.Log("Action executed");
