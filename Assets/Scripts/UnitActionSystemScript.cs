@@ -37,6 +37,10 @@ public class UnitActionSystemScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (TurnSystem.Instance.IsEnemyTurn())
+        {
+            return;
+        }
         if (EventSystem.current.IsPointerOverGameObject())
         {
             return;
@@ -123,6 +127,11 @@ public class UnitActionSystemScript : MonoBehaviour
         }
 
         if (unitSelected == selectedUnit)
+        {
+            return false;
+        }
+
+        if (unitSelected != null && unitSelected.IsEnemy())
         {
             return false;
         }

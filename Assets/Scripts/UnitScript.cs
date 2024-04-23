@@ -9,6 +9,7 @@ public class UnitScript : MonoBehaviour
     public event EventHandler OnUnitStopMoving;
     public static event EventHandler OnAnyActionPointsChanged;
     [SerializeField] private Animator unitAnimator;
+    [SerializeField] private bool isEnemy;
 
     private GridSystem.GridPosition currentGridPosition;
     private MoveAction moveAction;
@@ -35,13 +36,19 @@ public class UnitScript : MonoBehaviour
 
     private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
     {
-        ResetActionPoints();
+        if ((IsEnemy() && !TurnSystem.Instance.IsEnemyTurn()) ||
+            (!IsEnemy() && TurnSystem.Instance.IsPlayerTurn()))
+        {
+            ResetActionPoints();
+        }
+        
     }
 
     private void ResetActionPoints()
     {
+
         actionPoints = ACTION_POINTS_INIT;
-        
+
         OnAnyActionPointsChanged?.Invoke(this, null);
     }
 
@@ -122,5 +129,10 @@ public class UnitScript : MonoBehaviour
     public int GetActionPoints()
     {
         return actionPoints;
+    }
+
+    public bool IsEnemy()
+    {
+        return isEnemy;
     }
 }
