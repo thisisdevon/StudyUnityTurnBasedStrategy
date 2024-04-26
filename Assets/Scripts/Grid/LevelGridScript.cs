@@ -37,6 +37,9 @@ public class LevelGridScript : MonoBehaviour
 
     public List<UnitScript> GetUnitsAtGridPosition(GridSystem.GridPosition gridPosition) => GetGridObject(gridPosition)?.UnitList;
 
+    public UnitScript GetUnitAtGridPosition(GridSystem.GridPosition gridPosition) => GetGridObject(gridPosition)?.GetUnit();
+
+
     public GridSystem.GridPosition GetGridPosition(Vector3 position) => gridSystem.GetGridPosition(position);
     public Vector3 GetWorldPosition(GridSystem.GridPosition gridPosition) => gridSystem.GetWorldPosition(gridPosition);
     public Vector3 GetWorldPosition(int x, int z) => gridSystem.GetWorldPosition(x, z);

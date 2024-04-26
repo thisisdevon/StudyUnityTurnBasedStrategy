@@ -99,6 +99,11 @@ public class MoveAction : BaseAction
         {
             for (int z = -maxMoveDistance; z <= maxMoveDistance; z++)
             {
+                int totalDistance = Mathf.Abs(x) + Mathf.Abs(z);
+                if (totalDistance > maxMoveDistance) 
+                {
+                    continue;
+                }
                 GridSystem.GridPosition offsetGridPosition = new GridSystem.GridPosition(x, z);
                 GridSystem.GridPosition thisGridPosition = currentGridPosition + offsetGridPosition;
 

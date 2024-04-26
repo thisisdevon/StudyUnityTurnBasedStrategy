@@ -50,5 +50,10 @@ public class GridObject
             unitList.Remove(unitLeft);
         }
     }
+
+    public UnitScript GetUnit()
+    {
+        return unitList.Count > 0 ? unitList[0] : null;
+    }
 }
 
