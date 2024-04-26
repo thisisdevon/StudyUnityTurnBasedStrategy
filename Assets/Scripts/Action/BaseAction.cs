@@ -47,10 +47,14 @@ public abstract class BaseAction : MonoBehaviour
     // to be handled by ExecuteSelectedAction 
     public virtual bool ActionExecute(GridSystem.GridPosition targetGridPosition)
     {
-        isActive = IsSelectedGridWithinValidList(targetGridPosition) 
-            && ownerUnit.TryToExecuteAction(this); 
-            // cost point check;
+        isActive = CanExecute(targetGridPosition);
         return isActive;
+    }
+
+    protected bool CanExecute(GridSystem.GridPosition targetGridPosition)
+    {
+        return IsSelectedGridWithinValidList(targetGridPosition) 
+            && ownerUnit.TryToExecuteAction(this); 
     }
 
     // to be handled by CompletrSelectedAction 

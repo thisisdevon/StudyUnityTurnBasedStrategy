@@ -135,4 +135,9 @@ public class UnitScript : MonoBehaviour
     {
         return isEnemy;
     }
+
+    public void TakeDamage()
+    {
+        Debug.Log(gameObject.name + " - take damage");
+    }
 }
