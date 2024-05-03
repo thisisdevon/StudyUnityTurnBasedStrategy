@@ -11,17 +11,13 @@ public class ShootAction : BaseAction
         Shooting,
         Cooloff
     }
+    public EventHandler OnShooting;
 
     private State state;
     private int maxShootDistance = 7;
     private float stateTimer = 1.0f;
     private UnitScript targetUnit;
     private bool canShootBullet = true;
-    // Start is called before the first frame update
-    void Start()
-    {
-        state = State.Aiming; 
-    }
 
     // Update is called once per frame
     void Update()
@@ -43,7 +39,7 @@ public class ShootAction : BaseAction
         }
 
         Quaternion targetRotation = Quaternion.LookRotation(targetUnit.transform.position - transform.position);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 60f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 30f);
     }
 
     public override string GetActionName()
@@ -51,7 +47,7 @@ public class ShootAction : BaseAction
         return "SHOOT";
     }
 
-    public override void ActionSelected( Action onActionComplete)
+    public override void ActionSelected(Action onActionComplete)
     {
         base.ActionSelected(onActionComplete);
     }
@@ -68,6 +64,10 @@ public class ShootAction : BaseAction
         targetUnit = LevelGridScript.Instance.GetUnitAtGridPosition(targetGridPosition);
         canShootBullet = true;
         isActive = result &= base.CanExecute(targetGridPosition);
+        if (isActive)
+        {
+            state = State.Aiming;
+        }
         return result;
     }
 
@@ -142,6 +142,7 @@ public class ShootAction : BaseAction
 
     private void StartShoot()
     {
+        OnShooting?.Invoke(this, null);
         targetUnit.TakeDamage();
     }
 }

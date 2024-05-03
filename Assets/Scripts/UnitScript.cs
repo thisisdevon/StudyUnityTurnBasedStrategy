@@ -6,9 +6,7 @@ using UnityEngine;
 public class UnitScript : MonoBehaviour
 {
     private const int ACTION_POINTS_INIT = 2;
-    public event EventHandler OnUnitStopMoving;
     public static event EventHandler OnAnyActionPointsChanged;
-    [SerializeField] private Animator unitAnimator;
     [SerializeField] private bool isEnemy;
 
     private GridSystem.GridPosition currentGridPosition;
@@ -64,17 +62,7 @@ public class UnitScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!IsMoving())
-        {
-            unitAnimator.SetBool("IsWalking", false);
-            OnUnitStopMoving?.Invoke(this, EventArgs.Empty);
-        }
-        else
-        {
-            unitAnimator.SetBool("IsWalking", true);
-            //OnUnitMoving?.Invoke(this, this);
-            UpdateGridPosition(LevelGridScript.Instance.GetGridPosition(transform.position));
-        }
+        UpdateGridPosition(LevelGridScript.Instance.GetGridPosition(transform.position));
     }
 
     public GridSystem.GridPosition GetGridPosition()

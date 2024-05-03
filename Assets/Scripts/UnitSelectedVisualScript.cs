@@ -19,16 +19,10 @@ public class UnitSelectedVisualScript : MonoBehaviour
     void Start()
     {
         UnitActionSystemScript.Instance.OnSelectedUnitChanged += UnitActionSystemScript_OnSelectedUnitChanged;
-        OwnerUnit.OnUnitStopMoving += UnitScript_OnUnitStopMoving;
         UpdateVisual();
     }
 
     private void UnitActionSystemScript_OnSelectedUnitChanged(object sender, EventArgs empty)
-    {
-        UpdateVisual();
-    }
-
-    private void UnitScript_OnUnitStopMoving(object sender, EventArgs empty)
     {
         UpdateVisual();
     }

@@ -8,6 +8,8 @@ public class MoveAction : BaseAction
 {
     public const float MOVE_SPEED = 4f;
     public const float ROTATE_SPEED = 10f;
+    public EventHandler OnActionExecute;
+    public EventHandler OnActionComplete;
 
     [SerializeField] private AnimationCurve moveCurve;
     [SerializeField] private int maxMoveDistance = 4;
@@ -82,11 +84,18 @@ public class MoveAction : BaseAction
         elapsedMoveTime = 0f;
 
         moveTime = Vector3.Distance(this.moveEndPosition, this.moveStartPosition) / MOVE_SPEED;
-        return base.ActionExecute(targetGridPosition);
+        isActive = CanExecute(targetGridPosition);
+
+        if (isActive)
+        {
+            OnActionExecute?.Invoke(this, null);
+        }
+        return isActive;
     }
 
     public override void ActionComplete()
     {
+        OnActionComplete?.Invoke(this, null);
         base.ActionComplete(); //isactive false is here
     }
 
