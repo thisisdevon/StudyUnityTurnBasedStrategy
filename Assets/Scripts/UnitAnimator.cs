@@ -6,6 +6,8 @@ using UnityEngine;
 public class UnitAnimator : MonoBehaviour
 {
     [SerializeField] private Animator unitAnimator;
+    [SerializeField] private BulletProjectile bulletProjectilePrefab;
+    [SerializeField] private Transform shootPointTransform;
 
     private MoveAction moveAction;
     // Start is called before the first frame update
@@ -34,8 +36,13 @@ public class UnitAnimator : MonoBehaviour
     }
 
 
-    private void ShootAction_OnShooting(object sender, EventArgs empty)
+    private void ShootAction_OnShooting(object sender, ShootAction.OnShootEventArgs e)
     {
         unitAnimator.SetTrigger("ShootTrigger");
+
+        BulletProjectile bulletProjectile = Instantiate(bulletProjectilePrefab, shootPointTransform.position, Quaternion.identity) as BulletProjectile;
+        Vector3 targetPosition = e.targetUnit.GetWorldPosition();
+        targetPosition.y = shootPointTransform.position.y;
+        bulletProjectile.Setup(targetPosition);
     }
 }

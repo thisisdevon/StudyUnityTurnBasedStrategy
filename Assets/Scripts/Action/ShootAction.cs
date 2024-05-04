@@ -11,7 +11,13 @@ public class ShootAction : BaseAction
         Shooting,
         Cooloff
     }
-    public EventHandler OnShooting;
+    public EventHandler<OnShootEventArgs> OnShooting;
+
+    public class OnShootEventArgs : EventArgs
+    {
+        public UnitScript targetUnit;
+        public UnitScript ownerUnit;
+    }
 
     private State state;
     private int maxShootDistance = 7;
@@ -102,8 +108,6 @@ public class ShootAction : BaseAction
         return result;
     }
 
-    
-
     private bool IsGridPositionValid(GridSystem.GridPosition gridPosition)
     {
         return
@@ -142,7 +146,11 @@ public class ShootAction : BaseAction
 
     private void StartShoot()
     {
-        OnShooting?.Invoke(this, null);
+        OnShooting?.Invoke(this, new OnShootEventArgs 
+        {
+            targetUnit = targetUnit, 
+            ownerUnit = ownerUnit
+        });
         targetUnit.TakeDamage();
     }
 }

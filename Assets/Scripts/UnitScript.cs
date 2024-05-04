@@ -70,6 +70,12 @@ public class UnitScript : MonoBehaviour
         return currentGridPosition;
     }
 
+
+    public Vector3 GetWorldPosition()
+    {
+        return LevelGridScript.Instance.GetWorldPosition(currentGridPosition);
+    }
+
     //BASE ACTION
 
     public BaseAction[] GetBaseActionArray()
