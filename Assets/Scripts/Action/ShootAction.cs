@@ -24,6 +24,7 @@ public class ShootAction : BaseAction
     private float stateTimer = 1.0f;
     private UnitScript targetUnit;
     private bool canShootBullet = true;
+    private Vector3 targetUnitPosition;
 
     // Update is called once per frame
     void Update()
@@ -44,7 +45,7 @@ public class ShootAction : BaseAction
             StartShoot();
         }
 
-        Quaternion targetRotation = Quaternion.LookRotation(targetUnit.transform.position - transform.position);
+        Quaternion targetRotation = Quaternion.LookRotation(targetUnitPosition - transform.position);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 30f);
     }
 
@@ -68,6 +69,7 @@ public class ShootAction : BaseAction
         }
 
         targetUnit = LevelGridScript.Instance.GetUnitAtGridPosition(targetGridPosition);
+        targetUnitPosition = targetUnit.transform.position;
         canShootBullet = true;
         isActive = result &= base.CanExecute(targetGridPosition);
         if (isActive)
@@ -151,6 +153,6 @@ public class ShootAction : BaseAction
             targetUnit = targetUnit, 
             ownerUnit = ownerUnit
         });
-        targetUnit.TakeDamage();
+        targetUnit.TakeDamage(100);
     }
 }

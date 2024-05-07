@@ -29,6 +29,7 @@ public class UnitSelectedVisualScript : MonoBehaviour
 
     private void UpdateVisual()
     {
+        if (OwnerUnit == null) return;
         if (OwnerUnit == UnitActionSystemScript.Instance.GetSelectedUnit())
         {
             mesh.enabled = true;
@@ -37,5 +38,10 @@ public class UnitSelectedVisualScript : MonoBehaviour
         {
             mesh.enabled = false;
         }
+    }
+
+    private void OnDestroy()
+    {
+        UnitActionSystemScript.Instance.OnSelectedUnitChanged -= UnitActionSystemScript_OnSelectedUnitChanged;
     }
 }

@@ -10,6 +10,7 @@ public class UnitScript : MonoBehaviour
     [SerializeField] private bool isEnemy;
 
     private GridSystem.GridPosition currentGridPosition;
+    private HealthSystem healthSystem;
     private MoveAction moveAction;
     private SpinAction spinAction;
     private BaseAction[] baseActionArray;
@@ -20,12 +21,14 @@ public class UnitScript : MonoBehaviour
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
         baseActionArray = GetComponents<BaseAction>();
+        healthSystem = GetComponent<HealthSystem>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
+        healthSystem.OnDeath += HealthSystem_OnDead;
         this.currentGridPosition = LevelGridScript.Instance.GetGridPosition(transform.position);
         LevelGridScript.Instance.AssignUnit(this);
         LevelGridScript.Instance.GetGridObject(this.currentGridPosition).UnitEnterGrid(this);
@@ -39,7 +42,11 @@ public class UnitScript : MonoBehaviour
         {
             ResetActionPoints();
         }
-        
+    }
+
+    private void HealthSystem_OnDead(object sender, EventArgs e)
+    {
+        Destroy(gameObject);
     }
 
     private void ResetActionPoints()
@@ -130,8 +137,9 @@ public class UnitScript : MonoBehaviour
         return isEnemy;
     }
 
-    public void TakeDamage()
+    public void TakeDamage(int damageAmount)
     {
-        Debug.Log(gameObject.name + " - take damage");
+        LevelGridScript.Instance.RemoveUnitAtGridPosition(currentGridPosition, this);
+        healthSystem.TakeDamage(damageAmount);
     }
 }

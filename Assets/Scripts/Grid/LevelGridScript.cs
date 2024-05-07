@@ -68,4 +68,11 @@ public class LevelGridScript : MonoBehaviour
 
     public int GetGridSystemWidth() => gridSystem.GetWidth();
     public int GetGridSystemHeight() => gridSystem.GetHeight();
+
+    public void RemoveUnitAtGridPosition(GridSystem.GridPosition  gridPosition, UnitScript unit)
+    {
+        GridObject gridObject = gridSystem.GetGridObject(gridPosition);
+        gridObject.UnitLeftGrid(unit);
+    }
+
 }
