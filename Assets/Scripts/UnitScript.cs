@@ -51,10 +51,7 @@ public class UnitScript : MonoBehaviour
 
     private void ResetActionPoints()
     {
-
-        actionPoints = ACTION_POINTS_INIT;
-
-        OnAnyActionPointsChanged?.Invoke(this, null);
+        SetActionPoints(ACTION_POINTS_INIT);
     }
 
     public void UpdateGridPosition(GridSystem.GridPosition gridPosition)
@@ -123,13 +120,18 @@ public class UnitScript : MonoBehaviour
 
     private void SpendActionPoints(int spentAmount)
     {
-        actionPoints -= spentAmount;
-        OnAnyActionPointsChanged?.Invoke(this, null);
+        SetActionPoints(actionPoints - spentAmount);
     }
 
     public int GetActionPoints()
     {
         return actionPoints;
+    }
+
+    private void SetActionPoints(int actionPoints)
+    {
+        this.actionPoints = actionPoints;
+        OnAnyActionPointsChanged?.Invoke(this, null);
     }
 
     public bool IsEnemy()
@@ -141,5 +143,11 @@ public class UnitScript : MonoBehaviour
     {
         LevelGridScript.Instance.RemoveUnitAtGridPosition(currentGridPosition, this);
         healthSystem.TakeDamage(damageAmount);
+        
+    }
+
+    public float GetHealthNormalized()
+    {
+        return healthSystem.GetHealthNormalized();
     }
 }
