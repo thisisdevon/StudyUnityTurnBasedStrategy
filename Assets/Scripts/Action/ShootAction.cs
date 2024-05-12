@@ -68,6 +68,10 @@ public class ShootAction : BaseAction
 
     public override bool ActionExecute(GridSystem.GridPosition targetGridPosition)
     {
+        if (!IsSelectedGridWithinExecutableList(targetGridPosition))
+        {
+            return false;
+        }
         float aimingStateTimer = 1f;
         stateTimer = aimingStateTimer;
         targetUnit = LevelGridScript.Instance.GetUnitAtGridPosition(targetGridPosition);
@@ -98,8 +102,8 @@ public class ShootAction : BaseAction
     protected override bool IsGridPositionExecutable(GridSystem.GridPosition gridPosition)
     {
         return
-            LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition) &&
-            ownerUnit.IsEnemy() != LevelGridScript.Instance.GetUnitAtGridPosition(gridPosition).IsEnemy();
+            LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition) 
+            && ownerUnit.IsEnemy() != LevelGridScript.Instance.GetUnitAtGridPosition(gridPosition).IsEnemy();
     }
 
     private void NextState()
@@ -139,7 +143,7 @@ public class ShootAction : BaseAction
         return GridSystemVisual.GridVisualType.Red;
     }
 
-    public virtual GridSystemVisual.GridVisualType GetValidGridVisualType()
+    public override GridSystemVisual.GridVisualType GetValidGridVisualType()
     {
         return GridSystemVisual.GridVisualType.RedSoft;
     }

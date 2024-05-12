@@ -98,6 +98,7 @@ public class GridSystemVisual : MonoBehaviour
         if (selectedAction != null)
         {
             ShowGridPositionList(selectedAction.GetExecutableActionGridPositionList(), selectedAction.GetExecutableGridVisualType());
+            ShowGridPositionList(selectedAction.GetValidActionGridPositionList(), selectedAction.GetValidGridVisualType());
         }
     }
 
