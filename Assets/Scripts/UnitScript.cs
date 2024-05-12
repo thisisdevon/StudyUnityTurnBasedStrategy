@@ -141,9 +141,11 @@ public class UnitScript : MonoBehaviour
 
     public void TakeDamage(int damageAmount)
     {
-        LevelGridScript.Instance.RemoveUnitAtGridPosition(currentGridPosition, this);
-        healthSystem.TakeDamage(damageAmount);
-        
+        if (!healthSystem.TakeDamage(damageAmount))
+        {
+            //already died
+            LevelGridScript.Instance.RemoveUnitAtGridPosition(currentGridPosition, this);
+        }
     }
 
     public float GetHealthNormalized()

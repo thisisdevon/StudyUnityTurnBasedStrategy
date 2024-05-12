@@ -49,6 +49,11 @@ public class ShootAction : BaseAction
         Quaternion targetRotation = Quaternion.LookRotation(targetUnitPosition - transform.position);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 30f);
     }
+    
+    public UnitScript GetTargetUnit()
+    {
+        return targetUnit;
+    }
 
     public override string GetActionName()
     {
@@ -63,20 +68,21 @@ public class ShootAction : BaseAction
     public override bool ActionExecute(GridSystem.GridPosition targetGridPosition)
     {
         bool result = IsTheUnitOnGridShootable(targetGridPosition);
-        if (result)
+        if (!result)
         {
-            float aimingStateTimer = 1f;
-            stateTimer = aimingStateTimer;
+            Debug.Log(result);
+            return false;
         }
-
+        float aimingStateTimer = 1f;
+        stateTimer = aimingStateTimer;
         targetUnit = LevelGridScript.Instance.GetUnitAtGridPosition(targetGridPosition);
         targetUnitPosition = targetUnit.transform.position;
         canShootBullet = true;
-        isActive = result &= base.CanExecute(targetGridPosition);
-        if (isActive)
+        if (result && base.ActionExecute(targetGridPosition))
         {
             state = State.Aiming;
         }
+        Debug.Log(result);
         return result;
     }
 
@@ -120,6 +126,7 @@ public class ShootAction : BaseAction
 
     private bool IsTheUnitOnGridShootable(GridSystem.GridPosition gridPosition)
     {
+        Debug.Log("Is this enemy? " + LevelGridScript.Instance.GetUnitAtGridPosition(gridPosition).IsEnemy());
         return
             LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition) &&
             ownerUnit.IsEnemy() != LevelGridScript.Instance.GetUnitAtGridPosition(gridPosition).IsEnemy();

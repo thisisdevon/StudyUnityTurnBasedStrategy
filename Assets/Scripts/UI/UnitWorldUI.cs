@@ -30,7 +30,6 @@ public class UnitWorldUI : MonoBehaviour
 
     private void UpdateHealthBar()
     {
-        Debug.Log(unit.GetHealthNormalized());
         healthBar.fillAmount = unit.GetHealthNormalized();
     }
 

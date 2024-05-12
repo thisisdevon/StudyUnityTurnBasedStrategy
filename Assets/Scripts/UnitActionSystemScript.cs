@@ -86,14 +86,12 @@ public class UnitActionSystemScript : MonoBehaviour
         
         if (selectedAction.ActionExecute(gridPosition))
         {
-            Debug.Log("Action executed");
             OnActionExecute?.Invoke(this, null);
             hasStartedMoving = true;
             SetIsRunningAction();
         }
         else
         {
-            Debug.Log("Action cannot be executed");
             hasStartedMoving = false;
         }
     }

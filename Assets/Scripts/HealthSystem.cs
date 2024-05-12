@@ -15,7 +15,7 @@ public class HealthSystem : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-    public void TakeDamage(int damageAmount)
+    public bool TakeDamage(int damageAmount)
     {
         currentHealth -= damageAmount;
         OnDamage?.Invoke(this, null);
@@ -28,7 +28,9 @@ public class HealthSystem : MonoBehaviour
         if (currentHealth <= 0)
         {
             Die();
+            return false; //is dead
         }
+        return true; //still alive
     }
 
     private void Die()

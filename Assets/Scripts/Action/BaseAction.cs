@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(UnitScript))]
 public abstract class BaseAction : MonoBehaviour
 {
+    public static event EventHandler OnAnyActionExecuted;
+    public static event EventHandler OnAnyActionCompleted;
     protected UnitScript ownerUnit;
     protected bool isActive = false;
     protected Action onActionComplete;
@@ -16,6 +18,10 @@ public abstract class BaseAction : MonoBehaviour
     {
         ownerUnit = GetComponent<UnitScript>();
         validGridPositionList = new List<GridSystem.GridPosition>();
+    }
+    public UnitScript GetOwnerUnit()
+    {
+        return ownerUnit;
     }
 
     public bool GetIsActive()
@@ -48,6 +54,10 @@ public abstract class BaseAction : MonoBehaviour
     public virtual bool ActionExecute(GridSystem.GridPosition targetGridPosition)
     {
         isActive = CanExecute(targetGridPosition);
+        if (isActive)
+        {
+            OnAnyActionExecuted?.Invoke(this, null);
+        }
         return isActive;
     }
 
@@ -63,6 +73,7 @@ public abstract class BaseAction : MonoBehaviour
         isActive = false;
         onActionComplete();
         GridSystemVisual.Instance.UpdateGridVisual();
+        OnAnyActionCompleted?.Invoke(this, null);
     }
 
     public virtual List<GridSystem.GridPosition> GetValidActionGridPositionList()
