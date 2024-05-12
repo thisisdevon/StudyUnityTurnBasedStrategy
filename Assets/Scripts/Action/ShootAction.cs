@@ -102,8 +102,9 @@ public class ShootAction : BaseAction
     protected override bool IsGridPositionExecutable(GridSystem.GridPosition gridPosition)
     {
         return
-            LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition) 
-            && ownerUnit.IsEnemy() != LevelGridScript.Instance.GetUnitAtGridPosition(gridPosition).IsEnemy();
+            IsGridPositionValid(gridPosition) 
+            && LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition) 
+            && (ownerUnit.IsEnemy() != LevelGridScript.Instance.GetUnitAtGridPosition(gridPosition).IsEnemy());
     }
 
     private void NextState()

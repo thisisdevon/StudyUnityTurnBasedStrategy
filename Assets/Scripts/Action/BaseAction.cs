@@ -102,10 +102,12 @@ public abstract class BaseAction : MonoBehaviour
 
                 if (IsGridPositionExecutable(thisGridPosition))
                 {
+                    //if the action can be executed to this grid
                     executableGridPositionList.Add(thisGridPosition);
                 }
                 else if (IsGridPositionValid(thisGridPosition))
                 {
+                    //if the grid is within range but the action cannot be executed
                     validGridPositionList.Add(thisGridPosition);
                 }
             }
