@@ -91,16 +91,28 @@ public class MoveAction : BaseAction
 
     protected override bool IsGridPositionExecutable(GridSystem.GridPosition gridPosition)
     {
-        return IsGridPositionValid(gridPosition);
+        return
+            gridPosition != ownerUnit.GetGridPosition() &&
+            LevelGridScript.Instance.IsValidGridPosition(gridPosition) &&
+            !LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition);
     }
     
     protected override bool IsGridPositionValid(GridSystem.GridPosition gridPosition)
     {
         return
             gridPosition != ownerUnit.GetGridPosition() &&
-            LevelGridScript.Instance.IsValidGridPosition(gridPosition) &&
-            !LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition)
+            LevelGridScript.Instance.IsValidGridPosition(gridPosition);
         ;
     }
 
+    
+    public override GridSystemVisual.GridVisualType GetExecutableGridVisualType()
+    {
+        return GridSystemVisual.GridVisualType.White;
+    }
+
+    public override GridSystemVisual.GridVisualType GetValidGridVisualType()
+    {
+        return GridSystemVisual.GridVisualType.WhiteSoft;
+    }
 }
