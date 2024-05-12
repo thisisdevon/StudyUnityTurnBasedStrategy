@@ -91,7 +91,7 @@ public class UnitScript : MonoBehaviour
 
     public bool IsMoving () => moveAction.IsMoving();
 
-    public List<GridSystem.GridPosition> GetValidActionGridPositionList() => moveAction.GetValidActionGridPositionList();
+    public List<GridSystem.GridPosition> GetValidActionGridPositionList() => moveAction.GetExecutableActionGridPositionList();
 
     public MoveAction GetMoveAction()
     {
@@ -120,6 +120,7 @@ public class UnitScript : MonoBehaviour
 
     private void SpendActionPoints(int spentAmount)
     {
+        Debug.Log(spentAmount);
         SetActionPoints(actionPoints - spentAmount);
     }
 

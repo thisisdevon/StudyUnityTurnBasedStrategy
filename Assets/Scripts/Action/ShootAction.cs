@@ -67,23 +67,19 @@ public class ShootAction : BaseAction
 
     public override bool ActionExecute(GridSystem.GridPosition targetGridPosition)
     {
-        bool result = IsTheUnitOnGridShootable(targetGridPosition);
-        if (!result)
-        {
-            Debug.Log(result);
-            return false;
-        }
         float aimingStateTimer = 1f;
         stateTimer = aimingStateTimer;
         targetUnit = LevelGridScript.Instance.GetUnitAtGridPosition(targetGridPosition);
         targetUnitPosition = targetUnit.transform.position;
         canShootBullet = true;
-        if (result && base.ActionExecute(targetGridPosition))
+        state = State.Aiming;
+        
+        base.ActionExecute(targetGridPosition);
+        if (isActive)
         {
             state = State.Aiming;
         }
-        Debug.Log(result);
-        return result;
+        return isActive;
     }
 
     public override void ActionComplete()
@@ -91,6 +87,32 @@ public class ShootAction : BaseAction
         base.ActionComplete(); //isactive false is here
     }
 
+    public override List<GridSystem.GridPosition> GetExecutableActionGridPositionList()
+    {
+        List<GridSystem.GridPosition> result = new List<GridSystem.GridPosition>();
+        GridSystem.GridPosition currentGridPosition = ownerUnit.GetGridPosition();
+        
+        for (int x = -maxShootDistance; x <= maxShootDistance; x++)
+        {
+            for (int z = -maxShootDistance; z <= maxShootDistance; z++)
+            {
+                int totalDistance = Mathf.Abs(x) + Mathf.Abs(z);
+                if (totalDistance > maxShootDistance) 
+                {
+                    continue;
+                }
+                GridSystem.GridPosition offsetGridPosition = new GridSystem.GridPosition(x, z);
+                GridSystem.GridPosition thisGridPosition = currentGridPosition + offsetGridPosition;
+
+                if (IsGridPositionValid(thisGridPosition) && IsTheUnitOnGridShootable(thisGridPosition))
+                {
+                    result.Add(thisGridPosition);
+                }
+            }
+        }
+        return result;
+    }
+    
     public override List<GridSystem.GridPosition> GetValidActionGridPositionList()
     {
         List<GridSystem.GridPosition> result = new List<GridSystem.GridPosition>();
@@ -126,7 +148,6 @@ public class ShootAction : BaseAction
 
     private bool IsTheUnitOnGridShootable(GridSystem.GridPosition gridPosition)
     {
-        Debug.Log("Is this enemy? " + LevelGridScript.Instance.GetUnitAtGridPosition(gridPosition).IsEnemy());
         return
             LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition) &&
             ownerUnit.IsEnemy() != LevelGridScript.Instance.GetUnitAtGridPosition(gridPosition).IsEnemy();
@@ -162,5 +183,15 @@ public class ShootAction : BaseAction
             ownerUnit = ownerUnit
         });
         targetUnit.TakeDamage(damage);
+    }
+    
+    public override GridSystemVisual.GridVisualType GetExecutableGridVisualType()
+    {
+        return GridSystemVisual.GridVisualType.Red;
+    }
+
+    public virtual GridSystemVisual.GridVisualType GetValidGridVisualType()
+    {
+        return GridSystemVisual.GridVisualType.RedSoft;
     }
 }

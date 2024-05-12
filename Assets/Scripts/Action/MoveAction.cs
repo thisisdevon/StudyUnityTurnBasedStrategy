@@ -8,8 +8,8 @@ public class MoveAction : BaseAction
 {
     public const float MOVE_SPEED = 4f;
     public const float ROTATE_SPEED = 10f;
-    public EventHandler OnActionExecute;
-    public EventHandler OnActionComplete;
+    public EventHandler OnMoveActionExecute;
+    public EventHandler OnMoveActionComplete;
 
     [SerializeField] private AnimationCurve moveCurve;
     [SerializeField] private int maxMoveDistance = 4;
@@ -84,22 +84,22 @@ public class MoveAction : BaseAction
         elapsedMoveTime = 0f;
 
         moveTime = Vector3.Distance(this.moveEndPosition, this.moveStartPosition) / MOVE_SPEED;
-        isActive = CanExecute(targetGridPosition);
 
+        base.ActionExecute(targetGridPosition);
         if (isActive)
         {
-            OnActionExecute?.Invoke(this, null);
+            OnMoveActionExecute?.Invoke(this, null);
         }
         return isActive;
     }
 
     public override void ActionComplete()
     {
-        OnActionComplete?.Invoke(this, null);
+        OnMoveActionComplete?.Invoke(this, null);
         base.ActionComplete(); //isactive false is here
     }
 
-    public override List<GridSystem.GridPosition> GetValidActionGridPositionList()
+    public override List<GridSystem.GridPosition> GetExecutableActionGridPositionList()
     {
         List<GridSystem.GridPosition> result = new List<GridSystem.GridPosition>();
         GridSystem.GridPosition currentGridPosition = ownerUnit.GetGridPosition();

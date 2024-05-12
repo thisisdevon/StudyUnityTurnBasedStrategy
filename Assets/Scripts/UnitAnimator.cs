@@ -15,8 +15,8 @@ public class UnitAnimator : MonoBehaviour
     {
         if (TryGetComponent<MoveAction>(out MoveAction moveAction))
         {
-            moveAction.OnActionExecute += MoveAction_OnActionExecute;
-            moveAction.OnActionComplete += MoveAction_OnActionComplete;
+            moveAction.OnMoveActionExecute += MoveAction_OnActionExecute;
+            moveAction.OnMoveActionComplete += MoveAction_OnActionComplete;
         }
 
         if (TryGetComponent<ShootAction>(out ShootAction shootAction))

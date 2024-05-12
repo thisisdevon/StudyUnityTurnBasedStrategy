@@ -619,7 +619,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.3006394, y: 0.000000016410379, z: -0.0000000051729154, w: 0.9537379}
+  m_LocalRotation: {x: 0.3006394, y: -0.000000016410379, z: 0.0000000051729154, w: 0.9537379}
   m_LocalPosition: {x: 6.33, y: 7, z: -6.6800003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1289,7 +1289,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -44.8}
+  m_AnchoredPosition: {x: 0, y: -44.80005}
   m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &961909408
@@ -2284,7 +2284,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -116, y: -44.8}
+  m_AnchoredPosition: {x: -116, y: -44.80005}
   m_SizeDelta: {x: 160, y: 42.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1434575916
@@ -2528,7 +2528,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1482541662}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.3006394, y: 0.000000016410379, z: -0.0000000051729154, w: 0.9537379}
+  m_LocalRotation: {x: 0.3006394, y: -0.000000016410379, z: 0.0000000051729154, w: 0.9537379}
   m_LocalPosition: {x: 6.33, y: 7, z: -6.6800003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2764,6 +2764,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   singlePrefab: {fileID: 7474661013899696241, guid: c75c6fd9f88aa40e497440b5c0992c04,
     type: 3}
+  gridMaterialList:
+  - type: 0
+    material: {fileID: 2100000, guid: 787e0a30609d14c178315594f73b3c15, type: 2}
+  - type: 1
+    material: {fileID: 2100000, guid: 1878da7a70fb6a14ea1af67e0c0596ec, type: 2}
+  - type: 2
+    material: {fileID: 2100000, guid: 4cbba7d37bbfe9d42b4ae1cb62f08f24, type: 2}
+  - type: 3
+    material: {fileID: 2100000, guid: bd32e268d8809994491b20cb75b0f9f8, type: 2}
+  - type: 4
+    material: {fileID: 2100000, guid: 026156447ec7c7845ba5b78b8ea42963, type: 2}
+  - type: 5
+    material: {fileID: 2100000, guid: 30b45eefdf7fd444e8f37099a38046e9, type: 2}
+  - type: 6
+    material: {fileID: 2100000, guid: 2a297d961124cec4f900520ced6193a7, type: 2}
+  - type: 7
+    material: {fileID: 2100000, guid: 06ea16dc678631349bc21bae5fa6afed, type: 2}
 --- !u!4 &1962637928
 Transform:
   m_ObjectHideFlags: 0

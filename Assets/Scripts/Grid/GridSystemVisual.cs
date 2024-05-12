@@ -1,15 +1,34 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GridSystemVisual : MonoBehaviour
 {
+    [Serializable]
+    public struct GridVisualTypeMaterial
+    {
+        public GridVisualType type;
+        public Material material;
+    }
+    public enum GridVisualType
+    {
+        White,
+        Blue,
+        Red,
+        Yellow,
+        WhiteSoft,
+        BlueSoft,
+        RedSoft,
+        YellowSoft
+    }
+    
     [SerializeField] private GridSystemVisualSingle singlePrefab;
+    [SerializeField] private List<GridVisualTypeMaterial> gridMaterialList;
 
     private GridSystemVisualSingle[,] gridSystemVisualSingleArray;
 
     public static GridSystemVisual Instance { get; private set; }
-
 
     void Awake()
     {
@@ -42,6 +61,13 @@ public class GridSystemVisual : MonoBehaviour
                 }
             }   
         }
+
+        UnitActionSystemScript.Instance.OnSelectedActionChanged += UnitActionSystemScript_OnSelectedActionChanged;
+    }
+
+    private void UnitActionSystemScript_OnSelectedActionChanged(object sender, EventArgs empty)
+    {
+        UpdateGridVisual();
     }
 
     private void HideAllGridPosition()
@@ -55,11 +81,23 @@ public class GridSystemVisual : MonoBehaviour
         }
     }
 
-    private void ShowGridPositionList(List<GridSystem.GridPosition> gridPositionList)
+    private void ShowGridPositionRange(GridSystem.GridPosition gridPosition, int range, GridVisualType visualType)
+    {
+        
+        for (int x = -range; x <= range; x++)
+        {
+            for (int z = -range; z <= range; z++)
+            {
+
+            }
+        }
+    }
+
+    private void ShowGridPositionList(List<GridSystem.GridPosition> gridPositionList, GridVisualType visualType)
     {
         foreach (GridSystem.GridPosition gridPosition in gridPositionList)
         {
-            gridSystemVisualSingleArray[gridPosition.x, gridPosition.z].Show();
+            gridSystemVisualSingleArray[gridPosition.x, gridPosition.z].Show(GetGridVisualTypeMaterial(visualType));
         }
     }
 
@@ -68,10 +106,22 @@ public class GridSystemVisual : MonoBehaviour
         HideAllGridPosition();
 
         BaseAction selectedAction = UnitActionSystemScript.Instance.GetSelectedAction();
-
+        
         if (selectedAction != null)
         {
-            ShowGridPositionList(selectedAction.GetValidActionGridPositionList());
+            ShowGridPositionList(selectedAction.GetExecutableActionGridPositionList(), selectedAction.GetExecutableGridVisualType());
         }
+    }
+
+    private Material GetGridVisualTypeMaterial(GridVisualType type)
+    {
+        foreach(GridVisualTypeMaterial gridVisualTypeMaterial in gridMaterialList)
+        {
+            if (type == gridVisualTypeMaterial.type)
+            {
+                return gridVisualTypeMaterial.material;
+            }
+        }
+        return null;
     }
 }

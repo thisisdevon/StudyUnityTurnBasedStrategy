@@ -12,8 +12,7 @@ public abstract class BaseAction : MonoBehaviour
     protected bool isActive = false;
     protected Action onActionComplete;
     protected List<GridSystem.GridPosition> validGridPositionList;
-
-
+    
     protected virtual void Awake()
     {
         ownerUnit = GetComponent<UnitScript>();
@@ -45,8 +44,7 @@ public abstract class BaseAction : MonoBehaviour
     // to be handled by SelectSelectedAction 
     public virtual void ActionSelected(Action onActionComplete)
     {
-        validGridPositionList = GetValidActionGridPositionList();
-        GridSystemVisual.Instance.UpdateGridVisual();
+        validGridPositionList = GetExecutableActionGridPositionList();
         this.onActionComplete = onActionComplete;
     }
 
@@ -72,17 +70,32 @@ public abstract class BaseAction : MonoBehaviour
     {
         isActive = false;
         onActionComplete();
-        GridSystemVisual.Instance.UpdateGridVisual();
         OnAnyActionCompleted?.Invoke(this, null);
     }
 
+    public virtual List<GridSystem.GridPosition> GetExecutableActionGridPositionList()
+    {
+        return new List<GridSystem.GridPosition>();
+    }
+    
+    
     public virtual List<GridSystem.GridPosition> GetValidActionGridPositionList()
     {
         return new List<GridSystem.GridPosition>();
     }
-
+    
     public virtual int GetActionPointsCost()
     {
         return 1;
+    }
+    
+    public virtual GridSystemVisual.GridVisualType GetExecutableGridVisualType()
+    {
+        return GridSystemVisual.GridVisualType.White;
+    }
+
+    public virtual GridSystemVisual.GridVisualType GetValidGridVisualType()
+    {
+        return GridSystemVisual.GridVisualType.WhiteSoft;
     }
 }
