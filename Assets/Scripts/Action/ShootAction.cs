@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ShootAction : BaseAction
@@ -87,66 +88,14 @@ public class ShootAction : BaseAction
         base.ActionComplete(); //isactive false is here
     }
 
-    public override List<GridSystem.GridPosition> GetExecutableActionGridPositionList()
-    {
-        List<GridSystem.GridPosition> result = new List<GridSystem.GridPosition>();
-        GridSystem.GridPosition currentGridPosition = ownerUnit.GetGridPosition();
-        
-        for (int x = -maxShootDistance; x <= maxShootDistance; x++)
-        {
-            for (int z = -maxShootDistance; z <= maxShootDistance; z++)
-            {
-                int totalDistance = Mathf.Abs(x) + Mathf.Abs(z);
-                if (totalDistance > maxShootDistance) 
-                {
-                    continue;
-                }
-                GridSystem.GridPosition offsetGridPosition = new GridSystem.GridPosition(x, z);
-                GridSystem.GridPosition thisGridPosition = currentGridPosition + offsetGridPosition;
-
-                if (IsGridPositionValid(thisGridPosition) && IsTheUnitOnGridShootable(thisGridPosition))
-                {
-                    result.Add(thisGridPosition);
-                }
-            }
-        }
-        return result;
-    }
-    
-    public override List<GridSystem.GridPosition> GetValidActionGridPositionList()
-    {
-        List<GridSystem.GridPosition> result = new List<GridSystem.GridPosition>();
-        GridSystem.GridPosition currentGridPosition = ownerUnit.GetGridPosition();
-        
-        for (int x = -maxShootDistance; x <= maxShootDistance; x++)
-        {
-            for (int z = -maxShootDistance; z <= maxShootDistance; z++)
-            {
-                int totalDistance = Mathf.Abs(x) + Mathf.Abs(z);
-                if (totalDistance > maxShootDistance) 
-                {
-                    continue;
-                }
-                GridSystem.GridPosition offsetGridPosition = new GridSystem.GridPosition(x, z);
-                GridSystem.GridPosition thisGridPosition = currentGridPosition + offsetGridPosition;
-
-                if (IsGridPositionValid(thisGridPosition))
-                {
-                    result.Add(thisGridPosition);
-                }
-            }
-        }
-        return result;
-    }
-
-    private bool IsGridPositionValid(GridSystem.GridPosition gridPosition)
+    protected override bool IsGridPositionValid(GridSystem.GridPosition gridPosition)
     {
         return
             gridPosition != ownerUnit.GetGridPosition() &&
             LevelGridScript.Instance.IsValidGridPosition(gridPosition);
     }
 
-    private bool IsTheUnitOnGridShootable(GridSystem.GridPosition gridPosition)
+    protected override bool IsGridPositionExecutable(GridSystem.GridPosition gridPosition)
     {
         return
             LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition) &&

@@ -6,12 +6,16 @@ using UnityEngine;
 [RequireComponent(typeof(UnitScript))]
 public abstract class BaseAction : MonoBehaviour
 {
+    [SerializeField] private int range = 0;
     public static event EventHandler OnAnyActionExecuted;
     public static event EventHandler OnAnyActionCompleted;
     protected UnitScript ownerUnit;
     protected bool isActive = false;
     protected Action onActionComplete;
     protected List<GridSystem.GridPosition> validGridPositionList;
+    protected List<GridSystem.GridPosition> executableGridPositionList;
+    protected abstract bool IsGridPositionExecutable(GridSystem.GridPosition gridPosition);
+    protected abstract bool IsGridPositionValid(GridSystem.GridPosition gridPosition);
     
     protected virtual void Awake()
     {
@@ -32,7 +36,11 @@ public abstract class BaseAction : MonoBehaviour
     {
         return validGridPositionList.Contains(gridPosition);
     }
-
+    
+    public bool IsSelectedGridWithinExecutableList(GridSystem.GridPosition gridPosition)
+    {
+        return executableGridPositionList.Contains(gridPosition);
+    }
 
     public virtual string GetActionName()
     {
@@ -44,7 +52,7 @@ public abstract class BaseAction : MonoBehaviour
     // to be handled by SelectSelectedAction 
     public virtual void ActionSelected(Action onActionComplete)
     {
-        validGridPositionList = GetExecutableActionGridPositionList();
+        SetupActionGridPositionList();
         this.onActionComplete = onActionComplete;
     }
 
@@ -61,7 +69,7 @@ public abstract class BaseAction : MonoBehaviour
 
     protected bool CanExecute(GridSystem.GridPosition targetGridPosition)
     {
-        return IsSelectedGridWithinValidList(targetGridPosition) 
+        return IsSelectedGridWithinExecutableList(targetGridPosition) 
             && ownerUnit.TryToExecuteAction(this); 
     }
 
@@ -73,15 +81,46 @@ public abstract class BaseAction : MonoBehaviour
         OnAnyActionCompleted?.Invoke(this, null);
     }
 
-    public virtual List<GridSystem.GridPosition> GetExecutableActionGridPositionList()
+
+    protected void SetupActionGridPositionList()
     {
-        return new List<GridSystem.GridPosition>();
+        executableGridPositionList = new List<GridSystem.GridPosition>();
+        validGridPositionList = new List<GridSystem.GridPosition>();
+        GridSystem.GridPosition currentGridPosition = ownerUnit.GetGridPosition();
+        
+        for (int x = -range; x <= range; x++)
+        {
+            for (int z = -range; z <= range; z++)
+            {
+                int totalDistance = Mathf.Abs(x) + Mathf.Abs(z);
+                if (totalDistance > range) 
+                {
+                    continue;
+                }
+                GridSystem.GridPosition offsetGridPosition = new GridSystem.GridPosition(x, z);
+                GridSystem.GridPosition thisGridPosition = currentGridPosition + offsetGridPosition;
+
+                if (IsGridPositionExecutable(thisGridPosition))
+                {
+                    executableGridPositionList.Add(thisGridPosition);
+                }
+                else if (IsGridPositionValid(thisGridPosition))
+                {
+                    validGridPositionList.Add(thisGridPosition);
+                }
+            }
+        }
+    }
+
+    public List<GridSystem.GridPosition> GetExecutableActionGridPositionList()
+    {
+        return executableGridPositionList;
     }
     
     
-    public virtual List<GridSystem.GridPosition> GetValidActionGridPositionList()
+    public List<GridSystem.GridPosition> GetValidActionGridPositionList()
     {
-        return new List<GridSystem.GridPosition>();
+        return validGridPositionList;
     }
     
     public virtual int GetActionPointsCost()

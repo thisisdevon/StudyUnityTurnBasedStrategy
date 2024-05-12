@@ -119,15 +119,19 @@ public class GridSystem
 
     public GridObject GetGridObject(int x, int z)
     {
+        if (!IsGridPositionAcceptable(x, z))
+        {
+            return null;
+        }
         return gridObjectArray[x, z];
     }
 
-    public bool IsValidGridPosition(GridPosition gridPosition)
+    public bool IsGridPositionAcceptable(GridPosition gridPosition)
     {
-        return IsValidGridPosition(gridPosition.x, gridPosition.z);
+        return IsGridPositionAcceptable(gridPosition.x, gridPosition.z);
     }
 
-    public bool IsValidGridPosition(int x, int z)
+    public bool IsGridPositionAcceptable(int x, int z)
     {
         return x >= 0 &&  
         z >= 0 && 

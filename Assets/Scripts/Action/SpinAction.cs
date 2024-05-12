@@ -49,14 +49,6 @@ public class SpinAction : BaseAction
         base.ActionComplete();
     }
 
-    public override List<GridSystem.GridPosition> GetExecutableActionGridPositionList()
-    {
-        List<GridSystem.GridPosition> result = new List<GridSystem.GridPosition>{
-            ownerUnit.GetGridPosition()
-        };
-        return result;
-    }
-
     public override int GetActionPointsCost()
     {
         return 2;
@@ -65,5 +57,17 @@ public class SpinAction : BaseAction
     public override GridSystemVisual.GridVisualType GetExecutableGridVisualType()
     {
         return GridSystemVisual.GridVisualType.Blue;
+    }
+
+    protected override bool IsGridPositionExecutable(GridSystem.GridPosition gridPosition)
+    {
+        //hardcode to self
+        return true;
+    }
+
+    protected override bool IsGridPositionValid(GridSystem.GridPosition gridPosition)
+    {
+        //hardcode to self
+        return true;
     }
 }

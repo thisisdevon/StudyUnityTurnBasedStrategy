@@ -81,18 +81,6 @@ public class GridSystemVisual : MonoBehaviour
         }
     }
 
-    private void ShowGridPositionRange(GridSystem.GridPosition gridPosition, int range, GridVisualType visualType)
-    {
-        
-        for (int x = -range; x <= range; x++)
-        {
-            for (int z = -range; z <= range; z++)
-            {
-
-            }
-        }
-    }
-
     private void ShowGridPositionList(List<GridSystem.GridPosition> gridPositionList, GridVisualType visualType)
     {
         foreach (GridSystem.GridPosition gridPosition in gridPositionList)

@@ -507,6 +507,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6167226644384419d961cd9935453a27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  range: 4
   moveCurve:
     serializedVersion: 2
     m_Curve:
@@ -531,7 +532,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  maxMoveDistance: 4
 --- !u!114 &1116146396811376900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -544,6 +544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53085f171e6574df5b68c48baf802853, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  range: 0
 --- !u!114 &1789216333328960933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -556,6 +557,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f7ea2092269446628859a21123ff2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  range: 7
   damage: 50
 --- !u!114 &4805020192778928172
 MonoBehaviour:

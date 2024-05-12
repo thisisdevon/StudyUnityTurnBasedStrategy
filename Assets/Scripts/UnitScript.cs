@@ -120,7 +120,6 @@ public class UnitScript : MonoBehaviour
 
     private void SpendActionPoints(int spentAmount)
     {
-        Debug.Log(spentAmount);
         SetActionPoints(actionPoints - spentAmount);
     }
 

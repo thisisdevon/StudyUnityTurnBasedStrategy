@@ -12,7 +12,6 @@ public class MoveAction : BaseAction
     public EventHandler OnMoveActionComplete;
 
     [SerializeField] private AnimationCurve moveCurve;
-    [SerializeField] private int maxMoveDistance = 4;
     private Vector3 moveEndPosition;
     private Vector3 moveStartPosition;
     private float moveTime = -1f;
@@ -57,15 +56,6 @@ public class MoveAction : BaseAction
         return elapsedMoveTime < moveTime && isActive;
     }
 
-    private bool IsGridPositionValid(GridSystem.GridPosition gridPosition)
-    {
-        return
-            gridPosition != ownerUnit.GetGridPosition() &&
-            LevelGridScript.Instance.IsValidGridPosition(gridPosition) &&
-            !LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition)
-        ;
-    }
-
     public override string GetActionName()
     {
         return "MOVE";
@@ -99,29 +89,18 @@ public class MoveAction : BaseAction
         base.ActionComplete(); //isactive false is here
     }
 
-    public override List<GridSystem.GridPosition> GetExecutableActionGridPositionList()
+    protected override bool IsGridPositionExecutable(GridSystem.GridPosition gridPosition)
     {
-        List<GridSystem.GridPosition> result = new List<GridSystem.GridPosition>();
-        GridSystem.GridPosition currentGridPosition = ownerUnit.GetGridPosition();
-        
-        for (int x = -maxMoveDistance; x <= maxMoveDistance; x++)
-        {
-            for (int z = -maxMoveDistance; z <= maxMoveDistance; z++)
-            {
-                int totalDistance = Mathf.Abs(x) + Mathf.Abs(z);
-                if (totalDistance > maxMoveDistance) 
-                {
-                    continue;
-                }
-                GridSystem.GridPosition offsetGridPosition = new GridSystem.GridPosition(x, z);
-                GridSystem.GridPosition thisGridPosition = currentGridPosition + offsetGridPosition;
-
-                if (IsGridPositionValid(thisGridPosition))
-                {
-                    result.Add(thisGridPosition);
-                }
-            }
-        }
-        return result;
+        return IsGridPositionValid(gridPosition);
     }
+    
+    protected override bool IsGridPositionValid(GridSystem.GridPosition gridPosition)
+    {
+        return
+            gridPosition != ownerUnit.GetGridPosition() &&
+            LevelGridScript.Instance.IsValidGridPosition(gridPosition) &&
+            !LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition)
+        ;
+    }
+
 }
