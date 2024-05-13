@@ -89,16 +89,45 @@ public class EnemyAI : MonoBehaviour
 
     private bool TryToTakeEnemyAIAction(UnitScript enemyUnit, Action onEnemyAiActionComplete)
     {
-        SpinAction spinAction = enemyUnit.GetSpinAction();
-        spinAction.ActionSelected(onEnemyAiActionComplete);
+        EnemyAIAction bestEnemyAction = null;
+        BaseAction bestBaseAction = null;
 
-        GridSystem.GridPosition gridPosition = enemyUnit.GetGridPosition();
+        foreach(BaseAction baseAction in enemyUnit.GetBaseActionArray())
+        {
+            if (!enemyUnit.CanExecuteAction(baseAction))
+            {
+                continue;
+            }
+
+            if (bestEnemyAction == null)
+            {
+                bestEnemyAction = baseAction.GetBestEnemyAIAction();
+                bestBaseAction = baseAction;
+            }
+            else
+            {
+                EnemyAIAction tempEnemyAction = baseAction.GetBestEnemyAIAction();
+                if (tempEnemyAction != null && tempEnemyAction.actionValue > bestEnemyAction.actionValue)
+                {
+                    bestEnemyAction = tempEnemyAction;
+                    bestBaseAction = baseAction;
+                }
+            }
+        }
+
+        if (bestEnemyAction == null)
+        {
+            return false;
+        }
+
+        bestBaseAction.ActionSelected(onEnemyAiActionComplete);
+
+        GridSystem.GridPosition gridPosition = bestEnemyAction.gridPosition;
         if (!LevelGridScript.Instance.IsValidGridPosition(gridPosition))
         {
             return false;
-            // Start Moving
         }
         
-        return spinAction.ActionExecute(gridPosition);
+        return bestBaseAction.ActionExecute(gridPosition);
     }
 }

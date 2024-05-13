@@ -70,4 +70,12 @@ public class SpinAction : BaseAction
         //hardcode to self
         return true;
     }
+
+    protected override EnemyAIAction ValuateEnemyAIActionFromGridPosition(GridSystem.GridPosition gridPosition)
+    {
+        return new EnemyAIAction {
+            gridPosition = gridPosition,
+            actionValue = 0,
+        };
+    }
 }

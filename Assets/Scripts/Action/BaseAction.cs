@@ -59,7 +59,7 @@ public abstract class BaseAction : MonoBehaviour
     // to be handled by ExecuteSelectedAction 
     public virtual bool ActionExecute(GridSystem.GridPosition targetGridPosition)
     {
-        isActive = CanExecute(targetGridPosition);
+        isActive = TryToExecuteAction(targetGridPosition);
         if (isActive)
         {
             OnAnyActionExecuted?.Invoke(this, null);
@@ -67,10 +67,15 @@ public abstract class BaseAction : MonoBehaviour
         return isActive;
     }
 
-    protected bool CanExecute(GridSystem.GridPosition targetGridPosition)
+    protected bool TryToExecuteAction(GridSystem.GridPosition targetGridPosition)
     {
         return IsSelectedGridWithinExecutableList(targetGridPosition) 
             && ownerUnit.TryToExecuteAction(this); 
+    }
+
+    public bool CanExecuteAction()
+    {
+        return ownerUnit.CanExecuteAction(this);
     }
 
     // to be handled by CompletrSelectedAction 
@@ -114,6 +119,32 @@ public abstract class BaseAction : MonoBehaviour
         }
     }
 
+    protected List<GridSystem.GridPosition> GetExecutableGridPositionsFromAGridPosition(GridSystem.GridPosition gridPosition)
+    {
+        List<GridSystem.GridPosition> result = new List<GridSystem.GridPosition>();
+        
+        for (int x = -range; x <= range; x++)
+        {
+            for (int z = -range; z <= range; z++)
+            {
+                int totalDistance = Mathf.Abs(x) + Mathf.Abs(z);
+                if (totalDistance > range) 
+                {
+                    continue;
+                }
+                GridSystem.GridPosition offsetGridPosition = new GridSystem.GridPosition(x, z);
+                GridSystem.GridPosition thisGridPosition = gridPosition + offsetGridPosition;
+
+                if (IsGridPositionExecutable(thisGridPosition))
+                {
+                    //if the action can be executed to this grid
+                    result.Add(thisGridPosition);
+                }
+            }
+        }
+        return result;
+    }
+
     public List<GridSystem.GridPosition> GetExecutableActionGridPositionList()
     {
         return executableGridPositionList;
@@ -139,4 +170,26 @@ public abstract class BaseAction : MonoBehaviour
     {
         return GridSystemVisual.GridVisualType.WhiteSoft;
     }
+
+    public EnemyAIAction GetBestEnemyAIAction()
+    {
+        List<EnemyAIAction> enemyAIActionList = new List<EnemyAIAction>();
+
+        List<GridSystem.GridPosition> executableGridPositionFromGridPositionList = GetExecutableGridPositionsFromAGridPosition(ownerUnit.GetGridPosition());
+
+        foreach (GridSystem.GridPosition gridPosition in executableGridPositionFromGridPositionList)
+        {
+            EnemyAIAction enemyAIAction = ValuateEnemyAIActionFromGridPosition(gridPosition);
+            enemyAIActionList.Add(enemyAIAction);
+        }
+        if (enemyAIActionList.Count == 0)
+        {
+            return null;
+        }
+
+        enemyAIActionList.Sort((EnemyAIAction a, EnemyAIAction b) => b.actionValue - a.actionValue);
+        return enemyAIActionList[0];
+    }
+
+    protected abstract EnemyAIAction ValuateEnemyAIActionFromGridPosition(GridSystem.GridPosition gridPosition);
 }

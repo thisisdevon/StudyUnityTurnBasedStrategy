@@ -143,4 +143,19 @@ public class ShootAction : BaseAction
     {
         return GridSystemVisual.GridVisualType.RedSoft;
     }
+
+    protected override EnemyAIAction ValuateEnemyAIActionFromGridPosition(GridSystem.GridPosition gridPosition)
+    {
+        UnitScript targetUnit = LevelGridScript.Instance.GetUnitAtGridPosition(gridPosition);
+        int actionValueOffset = Mathf.RoundToInt((1f - targetUnit.GetHealthNormalized()) * 1000);
+        return new EnemyAIAction {
+            gridPosition = gridPosition,
+            actionValue = 10000 + actionValueOffset,
+        };
+    }
+
+    public int GetTargetCountAtGridPosition(GridSystem.GridPosition gridPosition)
+    {
+        return GetExecutableGridPositionsFromAGridPosition(gridPosition).Count;
+    }
 }

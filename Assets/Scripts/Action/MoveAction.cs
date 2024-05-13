@@ -60,7 +60,7 @@ public class MoveAction : BaseAction
     {
         return "MOVE";
     }
-    
+
     public override bool ActionExecute(GridSystem.GridPosition targetGridPosition)
     {
         this.moveEndPosition = LevelGridScript.Instance.GetWorldPosition(targetGridPosition);
@@ -100,7 +100,6 @@ public class MoveAction : BaseAction
         ;
     }
 
-    
     public override GridSystemVisual.GridVisualType GetExecutableGridVisualType()
     {
         return GridSystemVisual.GridVisualType.White;
@@ -109,5 +108,15 @@ public class MoveAction : BaseAction
     public override GridSystemVisual.GridVisualType GetValidGridVisualType()
     {
         return GridSystemVisual.GridVisualType.WhiteSoft;
+    }
+
+    protected override EnemyAIAction ValuateEnemyAIActionFromGridPosition(GridSystem.GridPosition gridPosition)
+    {
+        ShootAction shootAction = ownerUnit.GetShootAction();
+        int actionValueOffset = shootAction.GetTargetCountAtGridPosition(gridPosition);
+        return new EnemyAIAction {
+            gridPosition = gridPosition,
+            actionValue = 900 + actionValueOffset,
+        };
     }
 }

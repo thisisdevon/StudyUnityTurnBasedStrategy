@@ -15,6 +15,7 @@ public class UnitScript : MonoBehaviour
     private HealthSystem healthSystem;
     private MoveAction moveAction;
     private SpinAction spinAction;
+    private ShootAction shootAction;
     private BaseAction[] baseActionArray;
     private int actionPoints;
 
@@ -22,6 +23,7 @@ public class UnitScript : MonoBehaviour
     {
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
+        shootAction = GetComponent<ShootAction>();
         baseActionArray = GetComponents<BaseAction>();
         healthSystem = GetComponent<HealthSystem>();
     }
@@ -91,6 +93,11 @@ public class UnitScript : MonoBehaviour
         return spinAction;
     }
 
+    public ShootAction GetShootAction()
+    {
+        return shootAction;
+    }
+
     public bool TryToExecuteAction(BaseAction baseAction)
     {
         if (CanExecuteAction(baseAction))
@@ -101,7 +108,7 @@ public class UnitScript : MonoBehaviour
         return false;
     }
 
-    private bool CanExecuteAction(BaseAction baseAction)
+    public bool CanExecuteAction(BaseAction baseAction)
     {
         return actionPoints >= baseAction.GetActionPointsCost();
     }
