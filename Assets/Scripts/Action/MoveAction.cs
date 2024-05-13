@@ -112,7 +112,7 @@ public class MoveAction : BaseAction
 
     protected override EnemyAIAction ValuateEnemyAIActionFromGridPosition(GridSystem.GridPosition gridPosition)
     {
-        ShootAction shootAction = ownerUnit.GetShootAction();
+        ShootAction shootAction = ownerUnit.GetAction<ShootAction>();
         int actionValueOffset = shootAction.GetTargetCountAtGridPosition(gridPosition);
         return new EnemyAIAction {
             gridPosition = gridPosition,

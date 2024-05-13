@@ -133,7 +133,7 @@ public class UnitActionSystemScript : MonoBehaviour
 
         if (selectedUnit != null)
         {
-            SetSelectedAction(unitSelected.GetMoveAction());
+            SetSelectedAction(unitSelected.GetAction<MoveAction>());
         }
         else
         {
@@ -162,7 +162,7 @@ public class UnitActionSystemScript : MonoBehaviour
 
     public bool HasUnitStoppedMoving()
     {
-        return selectedUnit != null && selectedAction == selectedUnit.GetMoveAction() && !selectedUnit.IsMoving();
+        return selectedUnit != null && selectedAction == selectedUnit.GetAction<MoveAction>() && !selectedUnit.IsMoving();
     }
 
     private void SetIsRunningAction()

@@ -13,17 +13,11 @@ public class UnitScript : MonoBehaviour
 
     private GridSystem.GridPosition currentGridPosition;
     private HealthSystem healthSystem;
-    private MoveAction moveAction;
-    private SpinAction spinAction;
-    private ShootAction shootAction;
     private BaseAction[] baseActionArray;
     private int actionPoints;
 
     void Awake()
     {
-        moveAction = GetComponent<MoveAction>();
-        spinAction = GetComponent<SpinAction>();
-        shootAction = GetComponent<ShootAction>();
         baseActionArray = GetComponents<BaseAction>();
         healthSystem = GetComponent<HealthSystem>();
     }
@@ -79,24 +73,7 @@ public class UnitScript : MonoBehaviour
 
     //MOVE ACTION
 
-    public bool IsMoving () => moveAction.IsMoving();
-
-    public List<GridSystem.GridPosition> GetValidActionGridPositionList() => moveAction.GetExecutableActionGridPositionList();
-
-    public MoveAction GetMoveAction()
-    {
-        return moveAction;
-    }
-
-    public SpinAction GetSpinAction()
-    {
-        return spinAction;
-    }
-
-    public ShootAction GetShootAction()
-    {
-        return shootAction;
-    }
+    public bool IsMoving () => GetAction<MoveAction>().IsMoving();
 
     public bool TryToExecuteAction(BaseAction baseAction)
     {
@@ -162,5 +139,17 @@ public class UnitScript : MonoBehaviour
         LevelGridScript.Instance.RemoveUnitAtGridPosition(currentGridPosition, this);
         Destroy(gameObject);
         OnAnyUnitSpawned?.Invoke(this, null);
+    }
+
+    public T GetAction<T>() where T : BaseAction
+    {
+        foreach (BaseAction baseAction in baseActionArray)
+        {
+            if (baseAction is T)
+            {
+                return (T) baseAction;
+            }
+        }
+        return null;
     }
 }
