@@ -7,6 +7,8 @@ public class UnitScript : MonoBehaviour
 {
     private const int ACTION_POINTS_INIT = 2;
     public static event EventHandler OnAnyActionPointsChanged;
+    public static event EventHandler OnAnyUnitSpawned;
+    public static event EventHandler OnAnyUnitDead;
     [SerializeField] private bool isEnemy;
 
     private GridSystem.GridPosition currentGridPosition;
@@ -27,26 +29,12 @@ public class UnitScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        OnAnyUnitSpawned?.Invoke(this, null);
         TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
         healthSystem.OnDeath += HealthSystem_OnDead;
         this.currentGridPosition = LevelGridScript.Instance.GetGridPosition(transform.position);
-        LevelGridScript.Instance.AssignUnit(this);
         LevelGridScript.Instance.GetGridObject(this.currentGridPosition).UnitEnterGrid(this);
         ResetActionPoints();
-    }
-
-    private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
-    {
-        if ((IsEnemy() && !TurnSystem.Instance.IsEnemyTurn()) ||
-            (!IsEnemy() && TurnSystem.Instance.IsPlayerTurn()))
-        {
-            ResetActionPoints();
-        }
-    }
-
-    private void HealthSystem_OnDead(object sender, EventArgs e)
-    {
-        Destroy(gameObject);
     }
 
     private void ResetActionPoints()
@@ -120,6 +108,7 @@ public class UnitScript : MonoBehaviour
 
     private void SpendActionPoints(int spentAmount)
     {
+        Debug.Log(spentAmount);
         SetActionPoints(actionPoints - spentAmount);
     }
 
@@ -144,12 +133,27 @@ public class UnitScript : MonoBehaviour
         if (!healthSystem.TakeDamage(damageAmount))
         {
             //already died
-            LevelGridScript.Instance.RemoveUnitAtGridPosition(currentGridPosition, this);
         }
     }
 
     public float GetHealthNormalized()
     {
         return healthSystem.GetHealthNormalized();
+    }
+
+    private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
+    {
+        if ((IsEnemy() && !TurnSystem.Instance.IsEnemyTurn()) ||
+            (!IsEnemy() && TurnSystem.Instance.IsPlayerTurn()))
+        {
+            ResetActionPoints();
+        }
+    }
+
+    private void HealthSystem_OnDead(object sender, EventArgs e)
+    {
+        LevelGridScript.Instance.RemoveUnitAtGridPosition(currentGridPosition, this);
+        Destroy(gameObject);
+        OnAnyUnitSpawned?.Invoke(this, null);
     }
 }

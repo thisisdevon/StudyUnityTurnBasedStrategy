@@ -60,12 +60,7 @@ public class MoveAction : BaseAction
     {
         return "MOVE";
     }
-
-    public override void ActionSelected( Action onActionComplete)
-    {
-        base.ActionSelected(onActionComplete);
-    }
-
+    
     public override bool ActionExecute(GridSystem.GridPosition targetGridPosition)
     {
         this.moveEndPosition = LevelGridScript.Instance.GetWorldPosition(targetGridPosition);

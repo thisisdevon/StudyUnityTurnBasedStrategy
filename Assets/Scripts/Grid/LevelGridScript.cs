@@ -9,7 +9,6 @@ public class LevelGridScript : MonoBehaviour
     public static LevelGridScript Instance { get; private set; }
 
     private GridSystem gridSystem;
-    private List<UnitScript> unitList;
 
     void Awake()
     {
@@ -20,19 +19,12 @@ public class LevelGridScript : MonoBehaviour
             return;
         }
         gridSystem = new GridSystem(10, 10, 2.0f);
-        unitList = new List<UnitScript>();
         Instance = this;
     }
 
     void Start()
     {
         gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
-    }
-
-    public void AssignUnit(UnitScript unit)
-    {
-        //unit.OnUnitMoving += UnitScript_OnUnitMoving;
-        unitList.Add(unit);
     }
 
     public List<UnitScript> GetUnitsAtGridPosition(GridSystem.GridPosition gridPosition) => GetGridObject(gridPosition)?.UnitList;

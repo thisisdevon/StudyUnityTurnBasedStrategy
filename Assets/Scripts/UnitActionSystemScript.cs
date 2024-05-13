@@ -14,7 +14,6 @@ public class UnitActionSystemScript : MonoBehaviour
     public static UnitActionSystemScript Instance { get; private set; }
     private UnitScript selectedUnit;
     private BaseAction selectedAction;
-    private bool hasStartedMoving = false;
 
     private bool isRunningAnAction; //isBusy
 
@@ -49,7 +48,6 @@ public class UnitActionSystemScript : MonoBehaviour
         {
             if (HasUnitStoppedMoving())
             {
-                hasStartedMoving = false;
                 ClearSelectedUnit();
             }
             return;
@@ -87,12 +85,7 @@ public class UnitActionSystemScript : MonoBehaviour
         if (selectedAction.ActionExecute(gridPosition))
         {
             OnActionExecute?.Invoke(this, null);
-            hasStartedMoving = true;
             SetIsRunningAction();
-        }
-        else
-        {
-            hasStartedMoving = false;
         }
     }
 
@@ -169,7 +162,7 @@ public class UnitActionSystemScript : MonoBehaviour
 
     public bool HasUnitStoppedMoving()
     {
-        return selectedUnit != null && selectedAction == selectedUnit.GetMoveAction() && hasStartedMoving && !selectedUnit.IsMoving();
+        return selectedUnit != null && selectedAction == selectedUnit.GetMoveAction() && !selectedUnit.IsMoving();
     }
 
     private void SetIsRunningAction()

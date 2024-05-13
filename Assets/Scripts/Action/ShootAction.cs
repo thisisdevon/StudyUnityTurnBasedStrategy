@@ -61,11 +61,6 @@ public class ShootAction : BaseAction
         return "SHOOT";
     }
 
-    public override void ActionSelected(Action onActionComplete)
-    {
-        base.ActionSelected(onActionComplete);
-    }
-
     public override bool ActionExecute(GridSystem.GridPosition targetGridPosition)
     {
         if (!IsSelectedGridWithinExecutableList(targetGridPosition))
