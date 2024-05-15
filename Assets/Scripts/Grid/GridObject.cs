@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GridObject
 {
-    private GridSystem gridSystem;
+    private GridSystem<GridObject> gridSystem;
     private List<UnitScript> unitList;
 
     public List<UnitScript> UnitList
@@ -12,9 +12,9 @@ public class GridObject
         get { return unitList; }
         private set { unitList = value; }
     }
-    private GridSystem.GridPosition gridPosition;
+    private GridPosition gridPosition;
 
-    public GridObject(GridSystem gridSystem, GridSystem.GridPosition gridPosition)
+    public GridObject(GridSystem<GridObject> gridSystem, GridPosition gridPosition)
     {
         this.gridSystem = gridSystem;
         this.gridPosition = gridPosition;

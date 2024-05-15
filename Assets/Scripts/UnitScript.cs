@@ -11,7 +11,7 @@ public class UnitScript : MonoBehaviour
     public static event EventHandler OnAnyUnitDead;
     [SerializeField] private bool isEnemy;
 
-    private GridSystem.GridPosition currentGridPosition;
+    private GridPosition currentGridPosition;
     private HealthSystem healthSystem;
     private BaseAction[] baseActionArray;
     private int actionPoints;
@@ -38,7 +38,7 @@ public class UnitScript : MonoBehaviour
         SetActionPoints(ACTION_POINTS_INIT);
     }
 
-    public void UpdateGridPosition(GridSystem.GridPosition gridPosition)
+    public void UpdateGridPosition(GridPosition gridPosition)
     {
         if (this.currentGridPosition != gridPosition)
         {
@@ -53,7 +53,7 @@ public class UnitScript : MonoBehaviour
         UpdateGridPosition(LevelGridScript.Instance.GetGridPosition(transform.position));
     }
 
-    public GridSystem.GridPosition GetGridPosition()
+    public GridPosition GetGridPosition()
     {
         return currentGridPosition;
     }

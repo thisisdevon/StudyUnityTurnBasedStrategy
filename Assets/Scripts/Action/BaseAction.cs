@@ -12,15 +12,15 @@ public abstract class BaseAction : MonoBehaviour
     protected UnitScript ownerUnit;
     protected bool isActive = false;
     protected Action onActionComplete;
-    protected List<GridSystem.GridPosition> validGridPositionList;
-    protected List<GridSystem.GridPosition> executableGridPositionList;
-    protected abstract bool IsGridPositionExecutable(GridSystem.GridPosition gridPosition);
-    protected abstract bool IsGridPositionValid(GridSystem.GridPosition gridPosition);
+    protected List<GridPosition> validGridPositionList;
+    protected List<GridPosition> executableGridPositionList;
+    protected abstract bool IsGridPositionExecutable(GridPosition gridPosition);
+    protected abstract bool IsGridPositionValid(GridPosition gridPosition);
     
     protected virtual void Awake()
     {
         ownerUnit = GetComponent<UnitScript>();
-        validGridPositionList = new List<GridSystem.GridPosition>();
+        validGridPositionList = new List<GridPosition>();
     }
     public UnitScript GetOwnerUnit()
     {
@@ -32,12 +32,12 @@ public abstract class BaseAction : MonoBehaviour
         return isActive;
     }
 
-    public bool IsSelectedGridWithinValidList(GridSystem.GridPosition gridPosition)
+    public bool IsSelectedGridWithinValidList(GridPosition gridPosition)
     {
         return validGridPositionList.Contains(gridPosition);
     }
     
-    public bool IsSelectedGridWithinExecutableList(GridSystem.GridPosition gridPosition)
+    public bool IsSelectedGridWithinExecutableList(GridPosition gridPosition)
     {
         return executableGridPositionList.Contains(gridPosition);
     }
@@ -57,7 +57,7 @@ public abstract class BaseAction : MonoBehaviour
     }
 
     // to be handled by ExecuteSelectedAction 
-    public virtual bool ActionExecute(GridSystem.GridPosition targetGridPosition)
+    public virtual bool ActionExecute(GridPosition targetGridPosition)
     {
         isActive = TryToExecuteAction(targetGridPosition);
         if (isActive)
@@ -67,7 +67,7 @@ public abstract class BaseAction : MonoBehaviour
         return isActive;
     }
 
-    protected bool TryToExecuteAction(GridSystem.GridPosition targetGridPosition)
+    protected bool TryToExecuteAction(GridPosition targetGridPosition)
     {
         return IsSelectedGridWithinExecutableList(targetGridPosition) 
             && ownerUnit.TryToExecuteAction(this); 
@@ -89,9 +89,9 @@ public abstract class BaseAction : MonoBehaviour
 
     protected void SetupActionGridPositionList()
     {
-        executableGridPositionList = new List<GridSystem.GridPosition>();
-        validGridPositionList = new List<GridSystem.GridPosition>();
-        GridSystem.GridPosition currentGridPosition = ownerUnit.GetGridPosition();
+        executableGridPositionList = new List<GridPosition>();
+        validGridPositionList = new List<GridPosition>();
+        GridPosition currentGridPosition = ownerUnit.GetGridPosition();
         
         for (int x = -range; x <= range; x++)
         {
@@ -102,8 +102,8 @@ public abstract class BaseAction : MonoBehaviour
                 {
                     continue;
                 }
-                GridSystem.GridPosition offsetGridPosition = new GridSystem.GridPosition(x, z);
-                GridSystem.GridPosition thisGridPosition = currentGridPosition + offsetGridPosition;
+                GridPosition offsetGridPosition = new GridPosition(x, z);
+                GridPosition thisGridPosition = currentGridPosition + offsetGridPosition;
 
                 if (IsGridPositionExecutable(thisGridPosition))
                 {
@@ -119,9 +119,9 @@ public abstract class BaseAction : MonoBehaviour
         }
     }
 
-    protected List<GridSystem.GridPosition> GetExecutableGridPositionsFromAGridPosition(GridSystem.GridPosition gridPosition)
+    protected List<GridPosition> GetExecutableGridPositionsFromAGridPosition(GridPosition gridPosition)
     {
-        List<GridSystem.GridPosition> result = new List<GridSystem.GridPosition>();
+        List<GridPosition> result = new List<GridPosition>();
         
         for (int x = -range; x <= range; x++)
         {
@@ -132,8 +132,8 @@ public abstract class BaseAction : MonoBehaviour
                 {
                     continue;
                 }
-                GridSystem.GridPosition offsetGridPosition = new GridSystem.GridPosition(x, z);
-                GridSystem.GridPosition thisGridPosition = gridPosition + offsetGridPosition;
+                GridPosition offsetGridPosition = new GridPosition(x, z);
+                GridPosition thisGridPosition = gridPosition + offsetGridPosition;
 
                 if (IsGridPositionExecutable(thisGridPosition))
                 {
@@ -145,13 +145,13 @@ public abstract class BaseAction : MonoBehaviour
         return result;
     }
 
-    public List<GridSystem.GridPosition> GetExecutableActionGridPositionList()
+    public List<GridPosition> GetExecutableActionGridPositionList()
     {
         return executableGridPositionList;
     }
     
     
-    public List<GridSystem.GridPosition> GetValidActionGridPositionList()
+    public List<GridPosition> GetValidActionGridPositionList()
     {
         return validGridPositionList;
     }
@@ -175,9 +175,9 @@ public abstract class BaseAction : MonoBehaviour
     {
         List<EnemyAIAction> enemyAIActionList = new List<EnemyAIAction>();
 
-        List<GridSystem.GridPosition> executableGridPositionFromGridPositionList = GetExecutableGridPositionsFromAGridPosition(ownerUnit.GetGridPosition());
+        List<GridPosition> executableGridPositionFromGridPositionList = GetExecutableGridPositionsFromAGridPosition(ownerUnit.GetGridPosition());
 
-        foreach (GridSystem.GridPosition gridPosition in executableGridPositionFromGridPositionList)
+        foreach (GridPosition gridPosition in executableGridPositionFromGridPositionList)
         {
             EnemyAIAction enemyAIAction = ValuateEnemyAIActionFromGridPosition(gridPosition);
             enemyAIActionList.Add(enemyAIAction);
@@ -191,5 +191,5 @@ public abstract class BaseAction : MonoBehaviour
         return enemyAIActionList[0];
     }
 
-    protected abstract EnemyAIAction ValuateEnemyAIActionFromGridPosition(GridSystem.GridPosition gridPosition);
+    protected abstract EnemyAIAction ValuateEnemyAIActionFromGridPosition(GridPosition gridPosition);
 }

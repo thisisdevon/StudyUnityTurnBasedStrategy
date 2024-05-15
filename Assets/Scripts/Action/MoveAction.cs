@@ -61,7 +61,7 @@ public class MoveAction : BaseAction
         return "MOVE";
     }
 
-    public override bool ActionExecute(GridSystem.GridPosition targetGridPosition)
+    public override bool ActionExecute(GridPosition targetGridPosition)
     {
         this.moveEndPosition = LevelGridScript.Instance.GetWorldPosition(targetGridPosition);
         this.moveStartPosition = transform.position;
@@ -84,7 +84,7 @@ public class MoveAction : BaseAction
         base.ActionComplete(); //isactive false is here
     }
 
-    protected override bool IsGridPositionExecutable(GridSystem.GridPosition gridPosition)
+    protected override bool IsGridPositionExecutable(GridPosition gridPosition)
     {
         return
             gridPosition != ownerUnit.GetGridPosition() &&
@@ -92,7 +92,7 @@ public class MoveAction : BaseAction
             !LevelGridScript.Instance.IsUnitOnGridPosition(gridPosition);
     }
     
-    protected override bool IsGridPositionValid(GridSystem.GridPosition gridPosition)
+    protected override bool IsGridPositionValid(GridPosition gridPosition)
     {
         return
             gridPosition != ownerUnit.GetGridPosition() &&
@@ -110,7 +110,7 @@ public class MoveAction : BaseAction
         return GridSystemVisual.GridVisualType.WhiteSoft;
     }
 
-    protected override EnemyAIAction ValuateEnemyAIActionFromGridPosition(GridSystem.GridPosition gridPosition)
+    protected override EnemyAIAction ValuateEnemyAIActionFromGridPosition(GridPosition gridPosition)
     {
         ShootAction shootAction = ownerUnit.GetAction<ShootAction>();
         int actionValueOffset = shootAction.GetTargetCountAtGridPosition(gridPosition);

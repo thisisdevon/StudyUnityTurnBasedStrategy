@@ -61,7 +61,7 @@ public class ShootAction : BaseAction
         return "SHOOT";
     }
 
-    public override bool ActionExecute(GridSystem.GridPosition targetGridPosition)
+    public override bool ActionExecute(GridPosition targetGridPosition)
     {
         if (!IsSelectedGridWithinExecutableList(targetGridPosition))
         {
@@ -87,14 +87,14 @@ public class ShootAction : BaseAction
         base.ActionComplete(); //isactive false is here
     }
 
-    protected override bool IsGridPositionValid(GridSystem.GridPosition gridPosition)
+    protected override bool IsGridPositionValid(GridPosition gridPosition)
     {
         return
             gridPosition != ownerUnit.GetGridPosition() &&
             LevelGridScript.Instance.IsValidGridPosition(gridPosition);
     }
 
-    protected override bool IsGridPositionExecutable(GridSystem.GridPosition gridPosition)
+    protected override bool IsGridPositionExecutable(GridPosition gridPosition)
     {
         return
             IsGridPositionValid(gridPosition) 
@@ -144,7 +144,7 @@ public class ShootAction : BaseAction
         return GridSystemVisual.GridVisualType.RedSoft;
     }
 
-    protected override EnemyAIAction ValuateEnemyAIActionFromGridPosition(GridSystem.GridPosition gridPosition)
+    protected override EnemyAIAction ValuateEnemyAIActionFromGridPosition(GridPosition gridPosition)
     {
         UnitScript targetUnit = LevelGridScript.Instance.GetUnitAtGridPosition(gridPosition);
         int actionValueOffset = Mathf.RoundToInt((1f - targetUnit.GetHealthNormalized()) * 1000);
@@ -154,7 +154,7 @@ public class ShootAction : BaseAction
         };
     }
 
-    public int GetTargetCountAtGridPosition(GridSystem.GridPosition gridPosition)
+    public int GetTargetCountAtGridPosition(GridPosition gridPosition)
     {
         return GetExecutableGridPositionsFromAGridPosition(gridPosition).Count;
     }

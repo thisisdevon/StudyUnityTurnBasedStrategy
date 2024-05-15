@@ -122,7 +122,7 @@ public class EnemyAI : MonoBehaviour
 
         bestBaseAction.ActionSelected(onEnemyAiActionComplete);
 
-        GridSystem.GridPosition gridPosition = bestEnemyAction.gridPosition;
+        GridPosition gridPosition = bestEnemyAction.gridPosition;
         if (!LevelGridScript.Instance.IsValidGridPosition(gridPosition))
         {
             return false;

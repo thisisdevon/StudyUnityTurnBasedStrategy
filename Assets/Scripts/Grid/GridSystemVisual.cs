@@ -81,9 +81,9 @@ public class GridSystemVisual : MonoBehaviour
         }
     }
 
-    private void ShowGridPositionList(List<GridSystem.GridPosition> gridPositionList, GridVisualType visualType)
+    private void ShowGridPositionList(List<GridPosition> gridPositionList, GridVisualType visualType)
     {
-        foreach (GridSystem.GridPosition gridPosition in gridPositionList)
+        foreach (GridPosition gridPosition in gridPositionList)
         {
             gridSystemVisualSingleArray[gridPosition.x, gridPosition.z].Show(GetGridVisualTypeMaterial(visualType));
         }

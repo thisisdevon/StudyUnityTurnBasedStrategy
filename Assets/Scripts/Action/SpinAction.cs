@@ -38,7 +38,7 @@ public class SpinAction : BaseAction
         base.ActionSelected(onActionComplete);
     }
 
-    public override bool ActionExecute(GridSystem.GridPosition targetGridPosition)
+    public override bool ActionExecute(GridPosition targetGridPosition)
     {
         totalSpinAmount = 0f;
         return base.ActionExecute(targetGridPosition);
@@ -59,19 +59,19 @@ public class SpinAction : BaseAction
         return GridSystemVisual.GridVisualType.Blue;
     }
 
-    protected override bool IsGridPositionExecutable(GridSystem.GridPosition gridPosition)
+    protected override bool IsGridPositionExecutable(GridPosition gridPosition)
     {
         //hardcode to self
         return true;
     }
 
-    protected override bool IsGridPositionValid(GridSystem.GridPosition gridPosition)
+    protected override bool IsGridPositionValid(GridPosition gridPosition)
     {
         //hardcode to self
         return true;
     }
 
-    protected override EnemyAIAction ValuateEnemyAIActionFromGridPosition(GridSystem.GridPosition gridPosition)
+    protected override EnemyAIAction ValuateEnemyAIActionFromGridPosition(GridPosition gridPosition)
     {
         return new EnemyAIAction {
             gridPosition = gridPosition,
