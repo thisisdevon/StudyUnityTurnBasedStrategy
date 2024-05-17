@@ -25,7 +25,7 @@ public class LevelGridScript : MonoBehaviour
 
     void Start()
     {
-        gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
+        //gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
     }
 
     public List<UnitScript> GetUnitsAtGridPosition(GridPosition gridPosition) => GetGridObject(gridPosition)?.UnitList;

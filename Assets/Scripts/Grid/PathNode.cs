@@ -1,0 +1,40 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// reference: GridObject
+public class PathNode
+{
+    private GridPosition gridPosition;
+    private int gCost;
+    private int hCost;
+    private int fCost;
+    private PathNode cameFromPathNode;
+
+    public PathNode(GridPosition gridPosition)
+    {
+        this.gridPosition = gridPosition;
+    }
+
+
+    public override string ToString()
+    {
+        string returnString = gridPosition.ToString();
+        return returnString;
+    }
+
+    public int GetGCost()
+    {
+        return gCost;
+    }
+
+    public int GetHCost()
+    {
+        return hCost;
+    }
+
+    public int GetFCost()
+    {
+        return fCost;
+    }
+}
