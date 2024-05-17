@@ -57,44 +57,11 @@ public class Pathfinding : MonoBehaviour
         startNode.SetHCost(CalculateDistance(startGridPosition, endGridPosition));
         startNode.CalculateFCost();
 
-        while (openList.Count > 0)
+        PathNode calculatedEndNode = GetMostOptimalPath(openList, closedList, startNode, endNode);
+        if (calculatedEndNode != null)
         {
-            PathNode currentNode = GetLowestFCostPathNode(openList);
-
-            if (currentNode == endNode)
-            {
-                // Reached final node
-                return CalculatePath(endNode);
-            }
-
-            openList.Remove(currentNode);
-            closedList.Add(currentNode);
-
-            foreach (PathNode neighbourNode in GetNeighbourList(currentNode))
-            {
-                if (closedList.Contains(neighbourNode))
-                {
-                    continue;
-                }
-
-                int tentativeGCost = 
-                    currentNode.GetGCost() + CalculateDistance(currentNode.GetGridPosition(), neighbourNode.GetGridPosition());
-
-                if (tentativeGCost < neighbourNode.GetGCost())
-                {
-                    neighbourNode.SetCameFromPathNode(currentNode);
-                    neighbourNode.SetGCost(tentativeGCost);
-                    neighbourNode.SetHCost(CalculateDistance(neighbourNode.GetGridPosition(), endGridPosition));
-                    neighbourNode.CalculateFCost();
-
-                    if (!openList.Contains(neighbourNode))
-                    {
-                        openList.Add(neighbourNode);
-                    }
-                }
-            }
+            return CalculatePath(calculatedEndNode);
         }
-
         // No path found
         return null;
     }
@@ -139,17 +106,21 @@ public class Pathfinding : MonoBehaviour
             {
                 int gridX = gridPosition.x + x;
                 int gridZ = gridPosition.z + z;
+
+                PathNode neighbourNode = GetNode(gridX, gridZ);
                 
                 if ((x == 0 && z == 0) ||
                     gridX < 0 ||
                     gridX >= gridSystem.GetWidth() || 
                     gridZ < 0 || 
-                    gridZ >= gridSystem.GetHeight())
+                    gridZ >= gridSystem.GetHeight() || 
+                    neighbourNode == currentNode.GetCameFromPathNode()
+                    )
                 {
                     continue;
                 }
-
-                neighbourList.Add(GetNode(gridX, gridZ));
+                
+                neighbourList.Add(neighbourNode);
             }
         }
 
@@ -175,5 +146,44 @@ public class Pathfinding : MonoBehaviour
             gridPositionList.Add(pathNode.GetGridPosition());
         }
         return gridPositionList;
+    }
+
+    private PathNode GetMostOptimalPath(List<PathNode> openList, List<PathNode> closedList,
+        PathNode currentNode, PathNode endNode)
+    {
+        if (currentNode == endNode)
+        {
+            // Reached final node
+            return endNode;
+        }
+        
+        openList.Remove(currentNode);
+        closedList.Add(currentNode);
+        
+        foreach (PathNode neighbourNode in GetNeighbourList(currentNode))
+        {
+            if (closedList.Contains(neighbourNode))
+            {
+                continue;
+            }
+
+            int tentativeGCost = 
+                currentNode.GetGCost() + CalculateDistance(currentNode.GetGridPosition(), neighbourNode.GetGridPosition());
+
+            if (tentativeGCost < neighbourNode.GetGCost())
+            {
+                neighbourNode.SetCameFromPathNode(currentNode);
+                neighbourNode.SetGCost(tentativeGCost);
+                neighbourNode.SetHCost(CalculateDistance(neighbourNode.GetGridPosition(), endNode.GetGridPosition()));
+                neighbourNode.CalculateFCost();
+
+                if (!openList.Contains(neighbourNode))
+                {
+                    openList.Add(neighbourNode);
+                }
+            }
+        }
+
+        return GetMostOptimalPath(openList, closedList, GetLowestFCostPathNode(openList), endNode);
     }
 }
