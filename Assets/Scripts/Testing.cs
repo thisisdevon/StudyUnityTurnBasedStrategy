@@ -19,7 +19,10 @@ public class Testing : MonoBehaviour
             GridPosition startGridPosition = new GridPosition(0, 0);
 
             List<GridPosition> gridPositionList = Pathfinding.Instance.FindPath(startGridPosition, mouseGridPosition);
-
+            if (gridPositionList == null)
+            {
+                return;
+            }
             for (int i = 0; i < gridPositionList.Count - 1; i++)
             {
                 Vector3 startPosition = LevelGridScript.Instance.GetWorldPosition(gridPositionList[i]);

@@ -66,6 +66,12 @@ public class Pathfinding : MonoBehaviour
         PathNode startNode = gridSystem.GetGridObject(startGridPosition);
         PathNode endNode = gridSystem.GetGridObject(endGridPosition);
         openList.Add(startNode);
+
+        if (!endNode.IsWalkable())
+        {
+            Debug.Log("End node isn't walkable");
+            return null;
+        }
         
         // Initialize each path node before calculating
         for (int x = 0; x < gridSystem.GetWidth(); x++)
