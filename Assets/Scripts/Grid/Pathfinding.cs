@@ -51,7 +51,6 @@ public class Pathfinding : MonoBehaviour
                     raycastOffsetDistance * 2,
                     obstaclesLayerMask))
                 {
-                    Debug.Log(x + " - " + z + " : false");
                     GetNode(x, z).SetIsWalkable(false);
                 }
             }
