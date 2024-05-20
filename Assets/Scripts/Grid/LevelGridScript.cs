@@ -9,6 +9,9 @@ public class LevelGridScript : MonoBehaviour
     public static LevelGridScript Instance { get; private set; }
 
     private GridSystem<GridObject> gridSystem;
+    [SerializeField] private int width = 10;
+    [SerializeField] private int height = 10;
+    [SerializeField] private float cellSize = 2;
 
     void Awake()
     {
@@ -18,14 +21,14 @@ public class LevelGridScript : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        gridSystem = new GridSystem<GridObject>(10, 10, 2.0f, 
+        gridSystem = new GridSystem<GridObject>(width, height, cellSize, 
         (GridSystem<GridObject> g, GridPosition gridPosition) => new GridObject(g, gridPosition));
         Instance = this;
     }
 
-    void Start()
+    private void Start()
     {
-        //gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
+        Pathfinding.Instance.Setup(width, height, cellSize);
     }
 
     public List<UnitScript> GetUnitsAtGridPosition(GridPosition gridPosition) => GetGridObject(gridPosition)?.UnitList;
