@@ -15,12 +15,15 @@ public partial struct RotatingCubeSystem : ISystem
     
     void OnUpdate(ref SystemState state)
     {
+        state.Enabled = false;
+        return;
         /*
         foreach ((RefRW<LocalTransform> localTransform, RefRO<RotateSpeed> rotateSpeed) 
-            in SystemAPI.Query<RefRW<LocalTransform>, RefRO<RotateSpeed>>())
+            in SystemAPI.Query<RefRW<LocalTransform>, RefRO<RotateSpeed>>().WithNone<Player>())
         {
         }
         */
+        
         RotatingCubeJob rotatingCubeJob = new RotatingCubeJob
         {
             deltaTime = SystemAPI.Time.DeltaTime
@@ -29,6 +32,7 @@ public partial struct RotatingCubeSystem : ISystem
     }
 
     [BurstCompile]
+    [WithAll(typeof(RotatingCube))]
     public partial struct RotatingCubeJob : IJobEntity
     {
         public float deltaTime;
